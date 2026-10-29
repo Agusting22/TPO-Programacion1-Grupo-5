@@ -77,3 +77,35 @@ def test_laser_no_afecta_submarino():
 def test_sonar_no_tiene_funcion_de_celdas_de_dano():
     with pytest.raises(armamento.ArmaInvalidaError):
         armamento.aplicar_disparo(tablero.crear_cubo(8), flota.crear_flota(), "S", (1, 1, 1), None, armamento.CATALOGO_ARMAS)
+
+
+def test_aplicar_disparo_primer_impacto_portaaviones_no_es_agua():
+    cubo = tablero.crear_cubo(8)
+    flota_rival = flota.crear_flota()
+    cubo, flota_rival = flota.ubicar_nave(cubo, flota_rival, "P", (6, 2, 2), (6, 2, 6))
+    resultado1 = armamento.aplicar_disparo(cubo, flota_rival, "T", (6, 2, 2), None, armamento.CATALOGO_ARMAS)
+    assert len(resultado1["celdas_impactadas"]) == 1
+    assert resultado1["celdas_impactadas"][0][0] == (6, 2, 2)
+    assert resultado1["celdas_agua"] == []
+    assert tablero.leer_celda(cubo, (6, 2, 2)) != tablero.IMPACTO
+
+    # Segundo disparo sobre la misma celda la marca como IMPACTO
+    resultado2 = armamento.aplicar_disparo(cubo, flota_rival, "T", (6, 2, 2), None, armamento.CATALOGO_ARMAS)
+    assert len(resultado2["celdas_impactadas"]) == 1
+    assert tablero.leer_celda(cubo, (6, 2, 2)) == tablero.IMPACTO
+
+
+def test_armas_area_no_vuelven_a_contar_impactos_en_celdas_marcadas():
+    cubo = tablero.crear_cubo(8)
+    flota_rival = flota.crear_flota()
+    cubo, flota_rival = flota.ubicar_nave(cubo, flota_rival, "F", (4, 4, 4), (4, 4, 5))
+    # Primer impacto en (4, 4, 4) con torpedo
+    resultado1 = armamento.aplicar_disparo(cubo, flota_rival, "T", (4, 4, 4), None, armamento.CATALOGO_ARMAS)
+    assert len(resultado1["celdas_impactadas"]) == 1
+    assert tablero.leer_celda(cubo, (4, 4, 4)) == tablero.IMPACTO
+
+    # Disparo de racimo en (4, 4, 5) que tiene de vecina a (4, 4, 4) ya marcada
+    resultado2 = armamento.aplicar_disparo(cubo, flota_rival, "R", (4, 4, 5), None, armamento.CATALOGO_ARMAS)
+    impactadas = [celda for celda, _, _ in resultado2["celdas_impactadas"]]
+    assert (4, 4, 5) in impactadas
+    assert (4, 4, 4) not in impactadas

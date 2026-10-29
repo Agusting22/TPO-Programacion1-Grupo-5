@@ -293,12 +293,11 @@ def registrar_impacto(flota_jugador, id_nave, punto):
 
 
 def obtener_estado_nave(nave):
-    impactadas = contar_celdas_impactadas(nave)
-    if impactadas == 0:
-        return ESTADO_SANA
-    if impactadas == len(nave["puntos"]):
+    if nave["hundida"]:
         return ESTADO_HUNDIDA
-    return ESTADO_AVERIADA
+    if any(cantidad > 0 for cantidad in nave["impactos"].values()):
+        return ESTADO_AVERIADA
+    return ESTADO_SANA
 
 
 def pertenece_a_submarino(flota_jugador, punto):

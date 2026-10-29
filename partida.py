@@ -9,7 +9,7 @@ import tablero
 
 PATRON_OPCION_MENU = r"^[1-3]$"
 PATRON_OPCION_UBICACION = r"^[12]$"
-PATRON_OPCION_TURNO = r"^[1-3]$"
+PATRON_OPCION_TURNO = r"^[1-4]$"
 PATRON_OPCION_VISTA = r"^[1-3]$"
 PATRON_PUNTO = r"^\d{1,2},\d{1,2},\d{1,2}$"
 PATRON_TRAMO = r"^\d{1,2},\d{1,2},\d{1,2}-\d{1,2},\d{1,2},\d{1,2}$"
@@ -23,7 +23,8 @@ PATRON_CONFIRMACION = r"^[SN]$"
 OPCION_SALIR = "3"
 OPCION_TURNO_DISPARAR = "1"
 OPCION_TURNO_VER_CUBO = "2"
-OPCION_TURNO_SALIR = "3"
+OPCION_TURNO_RADAR = "3"
+OPCION_TURNO_SALIR = "4"
 OPCION_VISTA_CORTE_X = "2"
 OPCION_VISTA_CORTE_Y = "3"
 
@@ -45,7 +46,8 @@ TEXTO_MENU_UBICACION = "\n".join(["1 - Ubicacion manual", "2 - Ubicacion automat
 TEXTO_MENU_TURNO = "\n".join([
     "1 - Disparar",
     "2 - Ver el cubo",
-    "3 - Salir de la partida",
+    "3 - Reporte de radar (metricas)",
+    "4 - Salir de la partida",
 ])
 TEXTO_MENU_VISTA_CUBO = "\n".join([
     "1 - Capas en el eje z",
@@ -392,9 +394,9 @@ def realizar_disparo(estado, jugador_actual):
     n = estado["n"]
     defensor = obtener_defensor(estado, jugador_actual)
     letra_arma = pedir_opcion("Arma (T/R/C/S/L): ", PATRON_LETRA_ARMA)
-    datos = PEDIDOS_OBJETIVO[letra_arma](n)
-    jugada = {"arma": letra_arma, "punto": datos["punto"], "eje": datos["eje"], "valor": datos["valor"]}
     try:
+        datos = PEDIDOS_OBJETIVO[letra_arma](n)
+        jugada = {"arma": letra_arma, "punto": datos["punto"], "eje": datos["eje"], "valor": datos["valor"]}
         ejecutar_turno(estado, jugada)
     except armamento.MunicionAgotadaError:
         print("Sin municion de esa arma.")
@@ -463,6 +465,38 @@ def accion_ver_cubo(estado, jugador_actual):
     return True
 
 
+def formatear_metricas_radar(nombre_busqueda, metricas, total_encontrados):
+    lineas = [
+        "[" + nombre_busqueda + "]",
+        "- Celdas encontradas: " + str(total_encontrados),
+        "- Comparaciones: " + str(metricas["comparaciones"]),
+        "- Tiempo: " + f"{metricas['tiempo_ms']:.4f} ms",
+        "- Profundidad max: " + str(metricas["profundidad_max"]),
+    ]
+    return "\n".join(lineas)
+
+
+def mostrar_reporte_radar(estado, jugador_actual):
+    cubo = estado["cubos"][jugador_actual]
+    flota_jugador = estado["flotas"][jugador_actual]
+    puntos_lin, met_lin = radar.buscar_naves_lineal(cubo)
+    puntos_opt, met_opt = radar.buscar_naves_optimizada(cubo, flota_jugador)
+    print()
+    print("=== Reporte de Radar (" + jugador_actual + ") ===")
+    print(formatear_metricas_radar("Busqueda lineal", met_lin, len(puntos_lin)))
+    print()
+    print(formatear_metricas_radar("Busqueda optimizada", met_opt, len(puntos_opt)))
+    if len(puntos_opt) > 0:
+        puntos_str = ", ".join(formatear_punto(p) for p in puntos_opt)
+        print()
+        print("Celdas activas: " + puntos_str)
+
+
+def accion_radar(estado, jugador_actual):
+    mostrar_reporte_radar(estado, jugador_actual)
+    return True
+
+
 def accion_salir_partida(estado, jugador_actual):
     return False
 
@@ -470,6 +504,7 @@ def accion_salir_partida(estado, jugador_actual):
 ACCIONES_TURNO = {
     OPCION_TURNO_DISPARAR: accion_disparar,
     OPCION_TURNO_VER_CUBO: accion_ver_cubo,
+    OPCION_TURNO_RADAR: accion_radar,
     OPCION_TURNO_SALIR: accion_salir_partida,
 }
 

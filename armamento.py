@@ -145,11 +145,13 @@ def aplicar_disparo(cubo_rival, flota_rival, letra_arma, punto, eje, catalogo):
         nave = flota_rival[id_nave]
         if nave["tipo"] == flota.LETRA_SUBMARINO and letra_arma == LETRA_LASER:
             continue
+        requeridos = flota.celdas_requeridas_por_impacto(nave["tipo"])
+        if tablero.leer_celda(cubo_rival, celda) in (tablero.IMPACTO, tablero.HUNDIDO) or nave["impactos"].get(celda, 0) >= requeridos:
+            continue
         hundida_antes = nave["hundida"]
         flota.registrar_impacto(flota_rival, id_nave, celda)
-        requeridos = flota.celdas_requeridas_por_impacto(nave["tipo"])
+        resultado["celdas_impactadas"].append((celda, id_nave, nave["tipo"]))
         if nave["impactos"][celda] >= requeridos:
-            resultado["celdas_impactadas"].append((celda, id_nave, nave["tipo"]))
             if nave["hundida"]:
                 tablero.escribir_celda(cubo_rival, celda, tablero.HUNDIDO)
             else:

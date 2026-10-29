@@ -84,7 +84,8 @@ la partida.
 --- Turno de Jugador 1 ---
 1 - Disparar
 2 - Ver el cubo
-3 - Salir de la partida
+3 - Reporte de radar (metricas)
+4 - Salir de la partida
 Opcion: 1
 
 Arma (T/R/C/S/L): T
@@ -103,6 +104,10 @@ Impacto. Destructor averiado (1 de 3).
 - **Ver el cubo**: deja elegir entre ver todas las capas de z, un corte
   fijando x o un corte fijando y, y muestra el cubo propio (con las naves) y
   el cubo rival (sin revelar lo que todavia no fue descubierto).
+- **Reporte de radar (metricas)**: ejecuta y compara la busqueda lineal
+  (`radar.buscar_naves_lineal`) con la optimizada (`radar.buscar_naves_optimizada`)
+  sobre la flota propia, mostrando las celdas activas encontradas, cantidad de
+  comparaciones y tiempo de ejecucion en milisegundos.
 - **Salir de la partida**: corta la partida en curso y vuelve al menu
   principal.
 

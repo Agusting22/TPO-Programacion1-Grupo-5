@@ -71,3 +71,38 @@ def test_turno_maquina_dispara_y_avanza():
     estado["es_vs_maquina"] = True
     partida.turno_maquina(estado)
     assert estado["estadisticas"]["Jugador 1"]["disparos"] == 1
+
+
+def test_realizar_disparo_con_punto_invalido_no_corta_programa(monkeypatch, capsys):
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    # Simula ingresar arma "T" y luego un objetivo invalido "99,99,99"
+    respuestas = iter(["T", "99,99,99"])
+    monkeypatch.setattr("builtins.input", lambda _: next(respuestas))
+    # No debe levantar excepcion
+    partida.realizar_disparo(estado, "Jugador 1")
+    salida = capsys.readouterr().out
+    assert partida.MENSAJE_INVALIDO in salida
+    # El turno no debe avanzar
+    assert estado["turno_actual"] == "Jugador 1"
+
+
+def test_formatear_mensaje_primer_impacto_portaaviones_no_es_agua():
+    flota_rival = flota.crear_flota()
+    cubo = tablero.crear_cubo(8)
+    cubo, flota_rival = flota.ubicar_nave(cubo, flota_rival, "P", (6, 1, 1), (6, 1, 5))
+    resultado = armamento.aplicar_disparo(cubo, flota_rival, "T", (6, 1, 1), None, armamento.CATALOGO_ARMAS)
+    mensaje = partida.formatear_mensaje_resultado(flota_rival, resultado)
+    assert "Agua." not in mensaje
+    assert "Impacto" in mensaje
+    assert "Portaaviones" in mensaje
+
+
+def test_accion_radar_muestra_metricas(capsys):
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    resultado = partida.accion_radar(estado, "Jugador 1")
+    assert resultado is True
+    salida = capsys.readouterr().out
+    assert "Reporte de Radar" in salida
+    assert "Busqueda lineal" in salida
+    assert "Busqueda optimizada" in salida
+    assert "Comparaciones" in salida
