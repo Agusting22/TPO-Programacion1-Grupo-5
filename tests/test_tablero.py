@@ -85,3 +85,80 @@ def test_transponer_matriz():
 def test_sumar_matrices_distinto_tamano_lanza_excepcion():
     with pytest.raises(tablero.MatrizInvalidaError):
         tablero.sumar_matrices([[1, 2]], [[1, 2, 3]])
+
+
+def test_obtener_tamano_con_cubo_o_entero():
+    cubo = tablero.crear_cubo(4)
+    assert tablero.obtener_tamano(cubo) == 4
+    assert tablero.obtener_tamano(8) == 8
+    with pytest.raises(tablero.ErrorCubo):
+        tablero.obtener_tamano(0)
+
+
+def test_recorrido_capas_z_visita_todas_las_celdas():
+    cubo = tablero.crear_cubo(4)
+    puntos = tablero.recorrido_capas_z(cubo)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+    assert puntos[0] == (1, 1, 1)
+    assert puntos[-1] == (4, 4, 4)
+
+
+def test_recorrido_octantes_recursivo_visita_todas_las_celdas():
+    puntos = tablero.recorrido_octantes(4)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+    puntos_8 = tablero.recorrido_octantes(8)
+    assert len(puntos_8) == 512
+    assert len(set(puntos_8)) == 512
+
+
+def test_recorrido_espiral_recursivo_visita_todas_las_celdas():
+    cubo = tablero.crear_cubo(4)
+    puntos = tablero.recorrido_espiral(cubo)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+    assert puntos[0] == (1, 1, 1)
+
+
+def test_recorrido_propagacion_recursivo_visita_todas_las_celdas():
+    puntos = tablero.recorrido_propagacion(4)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+
+
+def test_recorrido_propagacion_con_origen_personalizado():
+    origen = (1, 1, 1)
+    puntos = tablero.recorrido_propagacion(4, origen)
+    assert puntos[0] == origen
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+
+
+def test_recorrido_propagacion_origen_invalido_lanza_excepcion():
+    with pytest.raises(tablero.PuntoInvalidoError):
+        tablero.recorrido_propagacion(4, (9, 9, 9))
+
+
+def test_despacho_recorridos_por_diccionario():
+    for nombre in [tablero.NOMBRE_RECORRIDO_CAPAS,
+                   tablero.NOMBRE_RECORRIDO_OCTANTES,
+                   tablero.NOMBRE_RECORRIDO_ESPIRAL,
+                   tablero.NOMBRE_RECORRIDO_PROPAGACION]:
+        puntos = tablero.obtener_recorrido(nombre, 4)
+        assert len(puntos) == 64
+        assert len(set(puntos)) == 64
+
+
+def test_obtener_recorrido_invalido_lanza_excepcion():
+    with pytest.raises(tablero.RecorridoInvalidoError):
+        tablero.obtener_recorrido("recorrido_inexistente", 4)
+
+
+def test_listar_nombres_recorridos():
+    nombres = tablero.listar_nombres_recorridos()
+    assert tablero.NOMBRE_RECORRIDO_CAPAS in nombres
+    assert tablero.NOMBRE_RECORRIDO_OCTANTES in nombres
+    assert tablero.NOMBRE_RECORRIDO_ESPIRAL in nombres
+    assert tablero.NOMBRE_RECORRIDO_PROPAGACION in nombres
+

@@ -4,8 +4,8 @@
 
 | Modulo | Alcance de la Entrega 1 | Responsable |
 |--------|-------------------------|-------------|
-| tablero.py (Nucleo 3D) | Cubo, excepciones base (`ErrorCubo`, `PuntoInvalidoError`), coordenadas 3D y validacion | Agustín Cangiani |
-| tablero.py (Algebra y Render) | Operaciones de matrices (suma, resta, multiplicacion, traspuesta) y `dibujar_capa` | Kevin Palma |
+| tablero.py (Nucleo 3D) | Cubo, excepciones base (ErrorCubo, PuntoInvalidoError), coordenadas 3D y validacion | Agustin Cangiani |
+| tablero.py (Algebra y Render) | Operaciones de matrices (suma, resta, multiplicacion, traspuesta) y dibujar_capa | Kevin Palma |
 | flota.py (Reglas y Catalogo) | Catalogo de naves, adyacencias en 26 direcciones y restricciones por nave | Thiago Negri |
 | flota.py (Algoritmos) | Algoritmo de ubicacion automatica con semilla y colocacion manual interactiva | Francisco Pavlicich |
 | radar.py / armamento.py / registro.py | Busqueda lineal con metricas, catalogo de armas (torpedo) e historial en memoria | Angel Nogales |
@@ -17,17 +17,17 @@ Integrador de esta entrega: Agustin Gonzalez
 
 | Modulo | Alcance de la Entrega 2 | Responsable |
 |--------|--------------------------|-------------|
-| tablero.py (Cortes y vecinos) | `vecinos_ortogonales`, cortes fijando x y fijando y | Agustín Cangiani |
+| tablero.py (Cortes y vecinos) | ecinos_ortogonales, cortes fijando x y fijando y | Agustin Cangiani |
 | flota.py (Impactos y estado) | Registro de impactos, estado sana/averiada/hundida, comportamientos de Destructor, Submarino y Portaaviones | Thiago Negri |
-| flota.py (Estacion y revelado) | Munición extra al hundir la estación orbital, elección de la celda a revelar | Francisco Pavlicich |
+| flota.py (Estacion y revelado) | Municion extra al hundir la estacion orbital, eleccion de la celda a revelar | Francisco Pavlicich |
 | radar.py (Busqueda optimizada y sonar) | Busqueda optimizada por indice de flota, sonar por planos | Angel Nogales |
 | armamento.py (Arsenal nuevo) | Misil de racimo, carga de profundidad, barrido laser y manejo de municion por diccionario | Kevin Palma |
 | registro.py (Estadisticas) | Estadisticas de la partida y resumen final | Angel Nogales |
 | partida.py / main.py (Turnos y partida completa) | Estado de partida, turnos, partida 1v1 y contra la maquina, submenus de disparo y de vista del cubo | Agustin Gonzalez |
 
-Nota: la munición extra de la Estación orbital se otorga sobre el Misil de
-racimo (no hay todavía un arma específica para eso, ya que Onda expansiva es
-de la Entrega 3). Lo dejamos documentado por si después hay que ajustarlo.
+Nota: la municion extra de la Estacion orbital se otorga sobre el Misil de
+racimo (no hay todavia un arma especifica para eso, ya que Onda expansiva es
+de la Entrega 3). Lo dejamos documentado por si despues hay que ajustarlo.
 
 Integrador de esta entrega: Agustin Gonzalez
 
@@ -35,6 +35,12 @@ Integrador de esta entrega: Agustin Gonzalez
 
 | Modulo | Alcance de la Entrega 3 | Responsable |
 |--------|--------------------------|-------------|
+| tablero.py (Recorridos del cubo) | Recorridos alternativos del cubo (capas Z, octantes recursivo, espiral recursivo, propagacion recursiva), despacho por diccionario y excepcion RecorridoInvalidoError | Agustin Cangiani |
+| flota.py (Persistencia) | Datos de la flota para guardar y reponer la partida (guardar_datos_flota, reponer_flota, reponer_flota_en_cubo, validar_datos_flota) | Francisco Pavlicich |
+| armamento.py (Armas avanzadas) | Onda expansiva (propagacion recursiva) y Torpedo guiado (busqueda contigua recursiva) | Kevin Palma / Francisco Pavlicich |
+| radar.py (Busquedas recursivas) | Busqueda recursiva, recorridos recursivos y mapa de probabilidad | A designar por el equipo |
+| registro.py (Persistencia JSON y ranking) | Guardado y carga en JSON, listado de partidas y ranking | A designar por el equipo |
+| partida.py / main.py (Integrador E3) | Maquina vs maquina, continuar partida guardada, guardar y salir, maquina con dos niveles | A designar por el equipo |
 | flota.py (Persistencia) | Datos de la flota para guardar y reponer la partida (`guardar_datos_flota`, `reponer_flota`, `reponer_flota_en_cubo`, `validar_datos_flota`) | Francisco Pavlicich |
 | armamento.py (Armas avanzadas) | Onda expansiva (propagación recursiva) y Torpedo guiado (búsqueda contigua recursiva) | Kevin Palma / Francisco Pavlicich |
 
