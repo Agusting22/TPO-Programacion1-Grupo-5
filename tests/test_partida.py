@@ -106,3 +106,60 @@ def test_accion_radar_muestra_metricas(capsys):
     assert "Busqueda lineal" in salida
     assert "Busqueda optimizada" in salida
     assert "Comparaciones" in salida
+
+
+# ---------------------------------------------------------------------------
+# Tests Entrega 3
+# ---------------------------------------------------------------------------
+
+def test_menu_principal_acepta_opciones_1_a_5():
+    for opcion in ["1", "2", "3", "4", "5"]:
+        assert partida.validar_opcion(opcion, partida.PATRON_OPCION_MENU)
+
+
+def test_menu_principal_no_acepta_opcion_6():
+    assert not partida.validar_opcion("6", partida.PATRON_OPCION_MENU)
+
+
+def test_opcion_salir_es_5():
+    assert partida.OPCION_SALIR == "5"
+
+
+def test_nueva_partida_maquina_vs_maquina_tiene_bandera():
+    estado = partida.nueva_partida_maquina_vs_maquina(armar_configuracion())
+    assert estado["es_maquina_vs_maquina"] is True
+    assert estado["es_vs_maquina"] is True
+
+
+def test_menu_turno_acepta_guardar_opcion_4():
+    assert partida.validar_opcion("4", partida.PATRON_OPCION_TURNO)
+
+
+def test_menu_turno_opcion_5_es_salir():
+    assert partida.OPCION_TURNO_SALIR == "5"
+    assert partida.OPCION_TURNO_GUARDAR == "4"
+
+
+def test_accion_guardar_partida_guarda_archivo(tmp_path, monkeypatch, capsys):
+    import registro
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("builtins.input", lambda _: "mi_partida")
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    resultado = partida.accion_guardar_partida(estado, "Jugador 1")
+    assert resultado is True
+    recuperado = registro.cargar_partida("mi_partida")
+    assert recuperado["jugador_1"] == "Jugador 1"
+
+
+def test_accion_salir_partida_devuelve_false():
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    assert partida.accion_salir_partida(estado, "Jugador 1") is False
+
+
+def test_turno_maquina_en_maquina_vs_maquina_avanza_turno():
+    estado = partida.nueva_partida_maquina_vs_maquina(armar_configuracion())
+    turno_antes = estado["turno_actual"]
+    partida.turno_maquina(estado)
+    # El turno debe haber avanzado (si no hay ganador)
+    if partida.hay_ganador(estado) is None:
+        assert estado["turno_actual"] != turno_antes

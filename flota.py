@@ -489,4 +489,108 @@ def elegir_celda_para_revelar(flota_jugador, cubo_jugador):
                 candidatos.append(punto)
     if len(candidatos) == 0:
         return None
-    return random.choice(candidatos)
+    return random.choice(candidatos)# ---------------------------------------------------------------------------
+
+def guardar_datos_flota(flota_jugador):
+    """
+    Objetivo: extraer y transformar los datos de la flota en un diccionario serializable
+    en formato JSON (convirtiendo sets a listas y tuplas de coordenadas a texto).
+    Parametros: flota_jugador (diccionario de naves en memoria).
+    Retorna: diccionario con los datos serializables de cada nave.
+    """
+    datos = {}
+    for id_nave, nave in flota_jugador.items():
+        puntos_serializados = [list(p) for p in sorted(nave["puntos"])]
+        impactos_serializados = {
+            f"{p[0]},{p[1]},{p[2]}": cantidad
+            for p, cantidad in nave["impactos"].items()
+        }
+        datos[id_nave] = {
+            "tipo": nave["tipo"],
+            "puntos": puntos_serializados,
+            "impactos": impactos_serializados,
+            "hundida": nave["hundida"],
+        }
+    return datos
+
+
+def reponer_flota(datos_flota):
+    """
+    Objetivo: reponer la flota en memoria a partir de los datos guardados
+    (reconstruyendo sets de tuplas para los puntos y tuplas como claves de impactos).
+    Parametros: datos_flota (diccionario obtenido de JSON).
+    Retorna: diccionario de flota en memoria listo para jugar.
+    """
+    flota_repuesta = crear_flota()
+    for id_nave, datos_nave in datos_flota.items():
+        tipo = datos_nave["tipo"]
+        puntos = {tuple(p) for p in datos_nave["puntos"]}
+        impactos = {}
+        impactos_guardados = datos_nave.get("impactos", {})
+        if isinstance(impactos_guardados, dict):
+            for clave, cantidad in impactos_guardados.items():
+                if isinstance(clave, str):
+                    partes = [int(val.strip()) for val in clave.split(",")]
+                    impactos[tuple(partes)] = cantidad
+                elif isinstance(clave, (tuple, list)):
+                    impactos[tuple(clave)] = cantidad
+        elif isinstance(impactos_guardados, list):
+            for item in impactos_guardados:
+                if isinstance(item, (list, tuple)) and len(item) == 2 and isinstance(item[1], int):
+                    impactos[tuple(item[0])] = item[1]
+                else:
+                    impactos[tuple(item)] = 1
+
+        nave_repuesta = {
+            "tipo": tipo,
+            "puntos": puntos,
+            "impactos": impactos,
+            "hundida": bool(datos_nave.get("hundida", False)),
+        }
+        nave_repuesta["hundida"] = calcular_hundida(nave_repuesta)
+        flota_repuesta[id_nave] = nave_repuesta
+    return flota_repuesta
+
+
+def reponer_flota_en_cubo(cubo, flota_jugador):
+    """
+    Objetivo: escribir en el cubo las naves de la flota repuesta con sus estados
+    correspondientes (oculta, impacto o hundida).
+    Parametros: cubo (3D), flota_jugador.
+    Retorna: cubo actualizado.
+    """
+    for id_nave, nave in flota_jugador.items():
+        requeridos = celdas_requeridas_por_impacto(nave["tipo"])
+        for punto in nave["puntos"]:
+            cant_impactos = nave["impactos"].get(punto, 0)
+            if nave["hundida"]:
+                tablero.escribir_celda(cubo, punto, tablero.HUNDIDO)
+            elif cant_impactos >= requeridos:
+                tablero.escribir_celda(cubo, punto, tablero.IMPACTO)
+            else:
+                tablero.escribir_celda(cubo, punto, tablero.NAVE_OCULTA)
+    return cubo
+
+
+def validar_datos_flota(datos_flota, catalogo=CATALOGO_NAVES):
+    """
+    Objetivo: validar la integridad y coherencia de los datos guardados de la flota.
+    Parametros: datos_flota (diccionario), catalogo de naves.
+    Retorna: True si los datos son validos.
+    Lanza: NaveInvalidaError o UbicacionInvalidaError ante datos corruptos.
+    """
+    if not isinstance(datos_flota, dict):
+        raise UbicacionInvalidaError("Los datos de flota deben ser un diccionario")
+    for id_nave, nave in datos_flota.items():
+        if "tipo" not in nave or nave["tipo"] not in catalogo:
+            raise NaveInvalidaError(f"Tipo de nave invalido en datos guardados: {id_nave}")
+        if "puntos" not in nave or len(nave["puntos"]) != catalogo[nave["tipo"]]["celdas"]:
+            raise UbicacionInvalidaError(f"Cantidad de puntos invalida para nave {id_nave}")
+    return True
+
+
+# Alias descriptivos para compatibilidad con distintos modulos del equipo
+serializar_flota = guardar_datos_flota
+deserializar_flota = reponer_flota
+obtener_datos_flota = guardar_datos_flota
+restaurar_flota = reponer_flota

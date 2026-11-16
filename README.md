@@ -143,6 +143,8 @@ Ninguna sale del cubo y entre dos naves queda al menos una celda libre en las
 | Carga de profundidad | C | 2 | toda la recta del eje z que pasa por el punto |
 | Sonar | S | 4 | no hace dano: revela un plano completo (eje + valor) |
 | Barrido laser | L | 2 | una recta completa sobre el eje x o el eje y, a eleccion |
+| Onda expansiva | O | 1 | se propaga en forma recursiva desde el punto, con radio decreciente |
+| Torpedo guiado | G | 1 | si hay un impacto previo sobre nave no hundida, busca en forma recursiva una celda contigua de esa nave |
 
 La seleccion de que funcion aplica cada arma (y tambien la de que
 recorrido/corte del cubo mostrar, y la de que accion del menu ejecutar) se

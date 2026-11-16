@@ -1,5 +1,8 @@
+import json
+import os
 import random
 import re
+import time
 
 import armamento
 import flota
@@ -7,32 +10,36 @@ import radar
 import registro
 import tablero
 
-PATRON_OPCION_MENU = r"^[1-3]$"
+PATRON_OPCION_MENU = r"^[1-5]$"
 PATRON_OPCION_UBICACION = r"^[12]$"
-PATRON_OPCION_TURNO = r"^[1-4]$"
+PATRON_OPCION_TURNO = r"^[1-5]$"
 PATRON_OPCION_VISTA = r"^[1-3]$"
 PATRON_PUNTO = r"^\d{1,2},\d{1,2},\d{1,2}$"
 PATRON_TRAMO = r"^\d{1,2},\d{1,2},\d{1,2}-\d{1,2},\d{1,2},\d{1,2}$"
 PATRON_LETRA_NAVE = r"^[FDSCPE]$"
-PATRON_LETRA_ARMA = r"^[TRCSL]$"
+PATRON_LETRA_ARMA = r"^[TRCSLOG]$"
 PATRON_EJE_LASER = r"^[XY]$"
 PATRON_EJE_SONAR = r"^[ZXY]$"
 PATRON_NUMERO = r"^\d{1,2}$"
 PATRON_CONFIRMACION = r"^[SN]$"
+PATRON_NOMBRE_PARTIDA = r"^[\w\-]{1,30}$"
 
-OPCION_SALIR = "3"
+OPCION_SALIR = "5"
 OPCION_TURNO_DISPARAR = "1"
 OPCION_TURNO_VER_CUBO = "2"
 OPCION_TURNO_RADAR = "3"
-OPCION_TURNO_SALIR = "4"
+OPCION_TURNO_GUARDAR = "4"
+OPCION_TURNO_SALIR = "5"
 OPCION_VISTA_CORTE_X = "2"
 OPCION_VISTA_CORTE_Y = "3"
 
 SEMILLA_MAXIMA = 1000000
 MAX_INTENTOS_MAQUINA = 500
+MAX_TURNOS_MAQUINA_VS_MAQUINA = 1000
 NOMBRE_JUGADOR_1 = "Jugador 1"
 NOMBRE_JUGADOR_2 = "Jugador 2"
 NOMBRE_MAQUINA = "Maquina"
+NOMBRE_MAQUINA_2 = "Maquina 2"
 MENSAJE_NO_UBICADA = "No se puede ubicar ahi. Intente de nuevo."
 MENSAJE_INVALIDO = "Dato invalido. Intente de nuevo."
 
@@ -40,14 +47,17 @@ TEXTO_MENU_PRINCIPAL = "\n".join([
     "===== OPERACION CUBO =====",
     "1 - Partida uno contra uno",
     "2 - Partida uno contra la maquina",
-    "3 - Salir",
+    "3 - Partida maquina contra maquina",
+    "4 - Continuar una partida guardada",
+    "5 - Salir",
 ])
 TEXTO_MENU_UBICACION = "\n".join(["1 - Ubicacion manual", "2 - Ubicacion automatica"])
 TEXTO_MENU_TURNO = "\n".join([
     "1 - Disparar",
     "2 - Ver el cubo",
     "3 - Reporte de radar (metricas)",
-    "4 - Salir de la partida",
+    "4 - Guardar partida",
+    "5 - Salir de la partida",
 ])
 TEXTO_MENU_VISTA_CUBO = "\n".join([
     "1 - Capas en el eje z",
@@ -182,7 +192,7 @@ def mostrar_estado(cubo, flota_jugador):
 
 
 # ---------------------------------------------------------------------------
-# Estado de la partida y turnos (Entrega 2)
+# Estado de la partida y turnos
 # ---------------------------------------------------------------------------
 
 def nueva_partida_1v1(configuracion):
@@ -215,6 +225,7 @@ def nueva_partida_1v1(configuracion):
         "historial": registro.crear_historial(),
         "estadisticas": registro.crear_estadisticas([nombre1, nombre2]),
         "es_vs_maquina": False,
+        "es_maquina_vs_maquina": False,
         "ganador": None,
     }
     return estado
@@ -223,14 +234,24 @@ def nueva_partida_1v1(configuracion):
 def nueva_partida_vs_maquina(configuracion, dificultad):
     """
     Objetivo: armar el estado inicial de una partida contra la maquina.
-    Parametros: configuracion (ver nueva_partida_1v1), dificultad (se guarda
-    para usarse en una proxima entrega; por ahora la maquina siempre dispara
-    al azar).
+    Parametros: configuracion (ver nueva_partida_1v1), dificultad.
     Retorna: diccionario de estado de la partida.
     """
     estado = nueva_partida_1v1(configuracion)
     estado["es_vs_maquina"] = True
     estado["dificultad"] = dificultad
+    return estado
+
+
+def nueva_partida_maquina_vs_maquina(configuracion):
+    """
+    Objetivo: armar el estado inicial de una partida maquina contra maquina.
+    Parametros: configuracion (ver nueva_partida_1v1).
+    Retorna: diccionario de estado de la partida.
+    """
+    estado = nueva_partida_1v1(configuracion)
+    estado["es_vs_maquina"] = True
+    estado["es_maquina_vs_maquina"] = True
     return estado
 
 
@@ -266,7 +287,7 @@ def procesar_comportamientos_especiales(estado, atacante, defensor, resultado):
 def ejecutar_turno(estado, jugada):
     """
     Objetivo: aplicar la jugada del jugador en turno y actualizar la partida.
-    Parametros: estado, jugada ({"arma", "punto", "eje", "valor"}).
+    Parametros: estado, jugada ({\"arma\", \"punto\", \"eje\", \"valor\"}).
     Retorna: estado actualizado.
     Lanza: MunicionAgotadaError, ObjetivoYaDisparadoError y las excepciones
     propias de armamento/flota/tablero si la jugada no es valida.
@@ -387,13 +408,15 @@ PEDIDOS_OBJETIVO = {
     armamento.LETRA_CARGA_PROFUNDIDAD: pedir_objetivo_punto,
     armamento.LETRA_LASER: pedir_objetivo_laser,
     armamento.LETRA_SONAR: pedir_objetivo_sonar,
+    armamento.LETRA_ONDA_EXPANSIVA: pedir_objetivo_punto,
+    armamento.LETRA_TORPEDO_GUIADO: pedir_objetivo_punto,
 }
 
 
 def realizar_disparo(estado, jugador_actual):
     n = estado["n"]
     defensor = obtener_defensor(estado, jugador_actual)
-    letra_arma = pedir_opcion("Arma (T/R/C/S/L): ", PATRON_LETRA_ARMA)
+    letra_arma = pedir_opcion("Arma (T/R/C/S/L/O/G): ", PATRON_LETRA_ARMA)
     try:
         datos = PEDIDOS_OBJETIVO[letra_arma](n)
         jugada = {"arma": letra_arma, "punto": datos["punto"], "eje": datos["eje"], "valor": datos["valor"]}
@@ -497,6 +520,38 @@ def accion_radar(estado, jugador_actual):
     return True
 
 
+def pedir_nombre_partida():
+    """
+    Objetivo: pedir al usuario un nombre valido para la partida a guardar/cargar.
+    Parametros: ninguno.
+    Retorna: nombre de partida validado (str).
+    """
+    texto = input("Nombre de la partida: ").strip()
+    while not validar_opcion(texto, PATRON_NOMBRE_PARTIDA):
+        print("Nombre invalido. Use solo letras, numeros, guiones (1-30 caracteres).")
+        texto = input("Nombre de la partida: ").strip()
+    return texto
+
+
+def guardar_partida_actual(estado):
+    """
+    Objetivo: pedir nombre al usuario y guardar el estado actual de la partida.
+    Parametros: estado.
+    Retorna: None.
+    """
+    nombre = pedir_nombre_partida()
+    try:
+        registro.guardar_partida(estado, nombre)
+        print("Partida guardada como '" + nombre + "'.")
+    except OSError as error:
+        print("Error al guardar: " + str(error))
+
+
+def accion_guardar_partida(estado, jugador_actual):
+    guardar_partida_actual(estado)
+    return True
+
+
 def accion_salir_partida(estado, jugador_actual):
     return False
 
@@ -505,6 +560,7 @@ ACCIONES_TURNO = {
     OPCION_TURNO_DISPARAR: accion_disparar,
     OPCION_TURNO_VER_CUBO: accion_ver_cubo,
     OPCION_TURNO_RADAR: accion_radar,
+    OPCION_TURNO_GUARDAR: accion_guardar_partida,
     OPCION_TURNO_SALIR: accion_salir_partida,
 }
 
@@ -528,18 +584,46 @@ def ejecutar_turno_maquina(estado):
     print(formatear_mensaje_resultado(estado["flotas"][defensor], jugada["resultado"]))
 
 
+def contar_turnos_jugados(estado):
+    return len(estado["historial"])
+
+
 def ejecutar_bucle_turnos(estado):
+    """
+    Objetivo: ejecutar el bucle principal de turnos hasta que haya ganador o el
+    jugador humano decida salir.
+    Parametros: estado.
+    Retorna: estado final.
+    """
     continuar = True
+    es_mvm = estado.get("es_maquina_vs_maquina", False)
+    turno_maximo = MAX_TURNOS_MAQUINA_VS_MAQUINA if es_mvm else None
     while continuar and hay_ganador(estado) is None:
+        if turno_maximo is not None and contar_turnos_jugados(estado) >= turno_maximo:
+            print()
+            print("Se alcanzo el limite de turnos. La partida termina sin ganador.")
+            break
         jugador_actual = estado["turno_actual"]
-        if estado["es_vs_maquina"] and jugador_actual == estado["jugador_2"]:
+        if es_mvm:
+            ejecutar_turno_maquina(estado)
+        elif estado["es_vs_maquina"] and jugador_actual == estado["jugador_2"]:
             ejecutar_turno_maquina(estado)
         else:
             continuar = ejecutar_turno_humano(estado, jugador_actual)
-    if hay_ganador(estado) is not None:
+    ganador = hay_ganador(estado)
+    if ganador is not None:
         print()
-        print("Gano " + hay_ganador(estado) + "!")
+        print("Gano " + ganador + "!")
         print(registro.formatear_resumen(estado["estadisticas"]))
+        try:
+            registro.guardar_ranking(
+                ganador,
+                "partida",
+                contar_turnos_jugados(estado),
+                estado["es_vs_maquina"],
+            )
+        except OSError:
+            pass
     return estado
 
 
@@ -584,6 +668,64 @@ def iniciar_partida_vs_maquina():
     ejecutar_bucle_turnos(estado)
 
 
+def iniciar_partida_maquina_vs_maquina():
+    """
+    Objetivo: iniciar y ejecutar una partida en modo maquina contra maquina.
+    Ambas flotas se ubican automaticamente y todos los turnos son automaticos.
+    """
+    n = tablero.TAMANO_CUBO_POR_DEFECTO
+    cubo1 = tablero.crear_cubo(n)
+    flota1 = ubicar_flota_automatica(cubo1, flota.crear_flota())
+    cubo2 = tablero.crear_cubo(n)
+    flota2 = ubicar_flota_automatica(cubo2, flota.crear_flota())
+    print()
+    print("Ambas maquinas ubicaron su flota. Iniciando partida automatica...")
+    configuracion = {
+        "n": n,
+        "nombre_jugador_1": NOMBRE_MAQUINA, "cubo_jugador_1": cubo1, "flota_jugador_1": flota1,
+        "nombre_jugador_2": NOMBRE_MAQUINA_2, "cubo_jugador_2": cubo2, "flota_jugador_2": flota2,
+    }
+    estado = nueva_partida_maquina_vs_maquina(configuracion)
+    ejecutar_bucle_turnos(estado)
+
+
+def mostrar_listado_partidas():
+    """
+    Objetivo: mostrar las partidas guardadas disponibles.
+    Retorna: lista de nombres.
+    """
+    nombres = registro.listar_partidas()
+    if not nombres:
+        print("No hay partidas guardadas.")
+    else:
+        print()
+        print("Partidas guardadas:")
+        for nombre in nombres:
+            print("  - " + nombre)
+    return nombres
+
+
+def continuar_partida_guardada():
+    """
+    Objetivo: listar las partidas guardadas, pedir al usuario que elija una y
+    continuar el bucle de turnos desde donde se guardo.
+    """
+    nombres = mostrar_listado_partidas()
+    if not nombres:
+        return
+    nombre = pedir_nombre_partida()
+    try:
+        estado = registro.cargar_partida(nombre)
+        print("Partida '" + nombre + "' cargada. Continuando...")
+        ejecutar_bucle_turnos(estado)
+    except FileNotFoundError:
+        print("No se encontro la partida '" + nombre + "'.")
+    except (ValueError, KeyError) as error:
+        print("Error al cargar la partida: " + str(error))
+    except OSError as error:
+        print("Error de archivo: " + str(error))
+
+
 def salir():
     return None
 
@@ -591,7 +733,9 @@ def salir():
 ACCIONES_MENU_PRINCIPAL = {
     "1": iniciar_partida_1v1,
     "2": iniciar_partida_vs_maquina,
-    "3": salir,
+    "3": iniciar_partida_maquina_vs_maquina,
+    "4": continuar_partida_guardada,
+    "5": salir,
 }
 
 

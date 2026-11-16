@@ -30,3 +30,11 @@ racimo (no hay todavía un arma específica para eso, ya que Onda expansiva es
 de la Entrega 3). Lo dejamos documentado por si después hay que ajustarlo.
 
 Integrador de esta entrega: Agustin Gonzalez
+
+## Entrega 3
+
+| Modulo | Alcance de la Entrega 3 | Responsable |
+|--------|--------------------------|-------------|
+| flota.py (Persistencia) | Datos de la flota para guardar y reponer la partida (`guardar_datos_flota`, `reponer_flota`, `reponer_flota_en_cubo`, `validar_datos_flota`) | Francisco Pavlicich |
+| armamento.py (Armas avanzadas) | Onda expansiva (propagación recursiva) y Torpedo guiado (búsqueda contigua recursiva) | Kevin Palma / Francisco Pavlicich |
+
