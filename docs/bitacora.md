@@ -38,7 +38,7 @@ Integrador de esta entrega: Agustin Gonzalez
 | tablero.py (Recorridos del cubo) | Recorridos alternativos del cubo (capas Z, octantes recursivo, espiral recursivo, propagacion recursiva), despacho por diccionario y excepcion RecorridoInvalidoError | Agustin Cangiani |
 | flota.py (Persistencia) | Datos de la flota para guardar y reponer la partida (guardar_datos_flota, reponer_flota, reponer_flota_en_cubo, validar_datos_flota) | Francisco Pavlicich |
 | armamento.py (Armas avanzadas) | Onda expansiva (propagacion recursiva) y Torpedo guiado (busqueda contigua recursiva) | Kevin Palma |
-| radar.py (Busquedas recursivas) | Busqueda recursiva, recorridos recursivos y mapa de probabilidad | A designar por el equipo |
+| radar.py (Busquedas recursivas) | Busqueda recursiva (capa por capa) | Agustin Gonzalez |
 | registro.py (Persistencia JSON y ranking) | Guardado y carga en JSON, listado de partidas y ranking | A designar por el equipo |
 | partida.py / main.py (Integrador E3) | Maquina vs maquina, continuar partida guardada, guardar y salir, maquina con dos niveles | Agustin Gonzalez |
 
