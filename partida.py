@@ -504,11 +504,14 @@ def mostrar_reporte_radar(estado, jugador_actual):
     flota_jugador = estado["flotas"][jugador_actual]
     puntos_lin, met_lin = radar.buscar_naves_lineal(cubo)
     puntos_opt, met_opt = radar.buscar_naves_optimizada(cubo, flota_jugador)
+    puntos_rec, met_rec = radar.buscar_naves_recursiva(cubo)
     print()
     print("=== Reporte de Radar (" + jugador_actual + ") ===")
     print(formatear_metricas_radar("Busqueda lineal", met_lin, len(puntos_lin)))
     print()
     print(formatear_metricas_radar("Busqueda optimizada", met_opt, len(puntos_opt)))
+    print()
+    print(formatear_metricas_radar("Busqueda recursiva", met_rec, len(puntos_rec)))
     if len(puntos_opt) > 0:
         puntos_str = ", ".join(formatear_punto(p) for p in puntos_opt)
         print()
