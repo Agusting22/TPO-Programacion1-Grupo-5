@@ -74,3 +74,26 @@ def test_buscar_naves_recursiva_profundidad_es_la_cantidad_de_capas():
     _, metricas = radar.buscar_naves_recursiva(cubo)
     assert metricas["profundidad_max"] == 4
     assert "tiempo_ms" in metricas
+
+
+def test_mapa_probabilidad_tiene_el_tamano_del_cubo():
+    cubo = tablero.crear_cubo(4)
+    mapa = radar.mapa_probabilidad(cubo, [2])
+    assert len(mapa) == 4
+    assert len(mapa[0]) == 4
+    assert len(mapa[0][0]) == 4
+
+
+def test_mapa_probabilidad_el_centro_tiene_mas_que_la_esquina():
+    cubo = tablero.crear_cubo(4)
+    mapa = radar.mapa_probabilidad(cubo, [2])
+    esquina = tablero.leer_celda(mapa, (1, 1, 1))
+    centro = tablero.leer_celda(mapa, (2, 2, 2))
+    assert centro > esquina
+
+
+def test_mapa_probabilidad_agua_marcada_vale_cero():
+    cubo = tablero.crear_cubo(4)
+    tablero.escribir_celda(cubo, (1, 1, 1), tablero.AGUA_MARCADA)
+    mapa = radar.mapa_probabilidad(cubo, [2])
+    assert tablero.leer_celda(mapa, (1, 1, 1)) == 0

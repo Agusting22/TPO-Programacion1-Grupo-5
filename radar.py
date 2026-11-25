@@ -94,6 +94,48 @@ def buscar_naves_recursiva(cubo):
     return (encontrados, metricas)
 
 
+DIRECCIONES_DE_NAVE = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+
+
+def _recta_de_celdas(inicio, direccion, largo):
+    celdas = []
+    for i in range(largo):
+        celdas.append((inicio[0] + i * direccion[0], inicio[1] + i * direccion[1], inicio[2] + i * direccion[2]))
+    return celdas
+
+
+def _recta_es_posible(cubo, recta):
+    for punto in recta:
+        if not tablero.es_punto_valido(punto, len(cubo)):
+            return False
+        if tablero.leer_celda(cubo, punto) in (tablero.AGUA_MARCADA, tablero.HUNDIDO):
+            return False
+    return True
+
+
+def mapa_probabilidad(cubo, largos):
+    """
+    Objetivo: contar, para cada celda, en cuantas posiciones posibles de las naves restantes esta.
+    Una posicion es una recta de celdas (sobre z, x o y) que no tiene agua marcada ni hundido.
+    La nave oculta cuenta como sin explorar, para no filtrar donde esta la flota.
+    La estacion orbital (bloque 2x2x2) no se cuenta.
+    Parametros: cubo, largos (lista con el largo de cada nave restante).
+    Retorna: matriz [z][x][y] de enteros con el mismo tamano que el cubo.
+    """
+    n = len(cubo)
+    mapa = tablero.crear_cubo(n)
+    for largo in largos:
+        for direccion in DIRECCIONES_DE_NAVE:
+            for z in range(1, n + 1):
+                for x in range(1, n + 1):
+                    for y in range(1, n + 1):
+                        recta = _recta_de_celdas((z, x, y), direccion, largo)
+                        if _recta_es_posible(cubo, recta):
+                            for punto in recta:
+                                tablero.escribir_celda(mapa, punto, tablero.leer_celda(mapa, punto) + 1)
+    return mapa
+
+
 def _celda_plano_z(valor, a, b):
     return (valor, a, b)
 
