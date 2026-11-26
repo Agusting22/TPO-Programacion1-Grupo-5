@@ -23,6 +23,15 @@ PATRON_EJE_SONAR = r"^[ZXY]$"
 PATRON_NUMERO = r"^\d{1,2}$"
 PATRON_CONFIRMACION = r"^[SN]$"
 PATRON_NOMBRE_PARTIDA = r"^[\w\-]{1,30}$"
+PATRON_OPCION_DIFICULTAD = r"^[12]$"
+
+DIFICULTAD_FACIL = "facil"
+DIFICULTAD_DIFICIL = "dificil"
+
+OPCIONES_DIFICULTAD = {
+    "1": DIFICULTAD_FACIL,
+    "2": DIFICULTAD_DIFICIL,
+}
 
 OPCION_SALIR = "5"
 OPCION_TURNO_DISPARAR = "1"
@@ -50,6 +59,11 @@ TEXTO_MENU_PRINCIPAL = "\n".join([
     "3 - Partida maquina contra maquina",
     "4 - Continuar una partida guardada",
     "5 - Salir",
+])
+TEXTO_MENU_DIFICULTAD = "\n".join([
+    "Dificultad de la maquina:",
+    "1 - Facil (disparos aleatorios)",
+    "2 - Dificil (estratega: caza naves averiadas y mapa de probabilidad)",
 ])
 TEXTO_MENU_UBICACION = "\n".join(["1 - Ubicacion manual", "2 - Ubicacion automatica"])
 TEXTO_MENU_TURNO = "\n".join([
@@ -243,15 +257,27 @@ def nueva_partida_vs_maquina(configuracion, dificultad):
     return estado
 
 
-def nueva_partida_maquina_vs_maquina(configuracion):
+def nueva_partida_maquina_vs_maquina(configuracion, dificultades=None):
     """
     Objetivo: armar el estado inicial de una partida maquina contra maquina.
-    Parametros: configuracion (ver nueva_partida_1v1).
+    Parametros: configuracion (ver nueva_partida_1v1), dificultades (opcional:
+    tupla/lista de dificultades para cada maquina, diccionario por nombre, o str).
     Retorna: diccionario de estado de la partida.
     """
     estado = nueva_partida_1v1(configuracion)
     estado["es_vs_maquina"] = True
     estado["es_maquina_vs_maquina"] = True
+    nombre1 = estado["jugador_1"]
+    nombre2 = estado["jugador_2"]
+    if isinstance(dificultades, (list, tuple)) and len(dificultades) >= 2:
+        estado["dificultades"] = {nombre1: dificultades[0], nombre2: dificultades[1]}
+    elif isinstance(dificultades, dict):
+        estado["dificultades"] = dificultades
+    elif isinstance(dificultades, str):
+        estado["dificultades"] = {nombre1: dificultades, nombre2: dificultades}
+    else:
+        estado["dificultades"] = {nombre1: DIFICULTAD_FACIL, nombre2: DIFICULTAD_DIFICIL}
+    estado["dificultad"] = estado["dificultades"].get(nombre2, DIFICULTAD_FACIL)
     return estado
 
 
@@ -336,20 +362,119 @@ def elegir_punto_aleatorio_no_disparado(cubo, n):
         if estado_celda not in (tablero.AGUA_MARCADA, tablero.IMPACTO, tablero.HUNDIDO):
             return punto
         intentos = intentos + 1
+    for z in range(1, n + 1):
+        for x in range(1, n + 1):
+            for y in range(1, n + 1):
+                punto = (z, x, y)
+                if tablero.leer_celda(cubo, punto) not in (tablero.AGUA_MARCADA, tablero.IMPACTO, tablero.HUNDIDO):
+                    return punto
     return (1, 1, 1)
+
+
+def celdas_vecinas_no_disparadas(cubo, n, punto):
+    validos = []
+    for vecino in tablero.vecinos_ortogonales(punto, n):
+        estado_celda = tablero.leer_celda(cubo, vecino)
+        if estado_celda not in (tablero.AGUA_MARCADA, tablero.IMPACTO, tablero.HUNDIDO):
+            validos.append(vecino)
+    return validos
+
+
+def buscar_objetivo_caza_impacto(cubo, flota_defensor, n):
+    for id_nave, nave in flota_defensor.items():
+        if flota.obtener_estado_nave(nave) == flota.ESTADO_AVERIADA:
+            for punto in nave["puntos"]:
+                if tablero.leer_celda(cubo, punto) == tablero.IMPACTO:
+                    vecinos = celdas_vecinas_no_disparadas(cubo, n, punto)
+                    if vecinos:
+                        return random.choice(vecinos)
+    return None
+
+
+def obtener_largos_naves_restantes(flota_defensor):
+    largos = []
+    for id_nave, nave in flota_defensor.items():
+        if not nave.get("hundida", False) and nave["tipo"] != flota.LETRA_ESTACION:
+            largos.append(flota.CATALOGO_NAVES[nave["tipo"]]["celdas"])
+    if not largos:
+        largos = [2]
+    return largos
+
+
+def elegir_punto_maxima_probabilidad(cubo, flota_defensor, n):
+    largos = obtener_largos_naves_restantes(flota_defensor)
+    mapa = radar.mapa_probabilidad(cubo, largos)
+    mejor_valor = -1
+    candidatos = []
+    for z in range(1, n + 1):
+        for x in range(1, n + 1):
+            for y in range(1, n + 1):
+                punto = (z, x, y)
+                estado_celda = tablero.leer_celda(cubo, punto)
+                if estado_celda not in (tablero.AGUA_MARCADA, tablero.IMPACTO, tablero.HUNDIDO):
+                    valor = tablero.leer_celda(mapa, punto)
+                    if valor > mejor_valor:
+                        mejor_valor = valor
+                        candidatos = [punto]
+                    elif valor == mejor_valor:
+                        candidatos.append(punto)
+    if candidatos:
+        return random.choice(candidatos)
+    return elegir_punto_aleatorio_no_disparado(cubo, n)
+
+
+def elegir_jugada_maquina_facil(estado, atacante):
+    defensor = obtener_defensor(estado, atacante)
+    n = estado["n"]
+    punto = elegir_punto_aleatorio_no_disparado(estado["cubos"][defensor], n)
+    return {"arma": armamento.LETRA_TORPEDO, "punto": punto, "eje": None, "valor": None}
+
+
+def elegir_jugada_maquina_dificil(estado, atacante):
+    defensor = obtener_defensor(estado, atacante)
+    cubo_defensor = estado["cubos"][defensor]
+    flota_defensor = estado["flotas"][defensor]
+    municion_atacante = estado["municiones"][atacante]
+    n = estado["n"]
+
+    if armamento.hay_municion(municion_atacante, armamento.LETRA_TORPEDO_GUIADO):
+        for id_nave, nave in flota_defensor.items():
+            if flota.obtener_estado_nave(nave) == flota.ESTADO_AVERIADA:
+                punto_no_disp = elegir_punto_aleatorio_no_disparado(cubo_defensor, n)
+                return {"arma": armamento.LETRA_TORPEDO_GUIADO, "punto": punto_no_disp, "eje": None, "valor": None}
+
+    punto_caza = buscar_objetivo_caza_impacto(cubo_defensor, flota_defensor, n)
+    if punto_caza is not None:
+        return {"arma": armamento.LETRA_TORPEDO, "punto": punto_caza, "eje": None, "valor": None}
+
+    punto_prob = elegir_punto_maxima_probabilidad(cubo_defensor, flota_defensor, n)
+    return {"arma": armamento.LETRA_TORPEDO, "punto": punto_prob, "eje": None, "valor": None}
+
+
+ESTRATEGIAS_MAQUINA = {
+    DIFICULTAD_FACIL: elegir_jugada_maquina_facil,
+    "normal": elegir_jugada_maquina_facil,
+    DIFICULTAD_DIFICIL: elegir_jugada_maquina_dificil,
+}
+
+
+def obtener_dificultad_turno(estado, atacante):
+    dificultades = estado.get("dificultades")
+    if isinstance(dificultades, dict) and atacante in dificultades:
+        return dificultades[atacante]
+    return estado.get("dificultad", DIFICULTAD_FACIL)
 
 
 def turno_maquina(estado):
     """
-    Objetivo: jugar el turno de la maquina disparando un torpedo al azar.
+    Objetivo: jugar el turno de la maquina segun el nivel de dificultad configurado.
     Parametros: estado.
     Retorna: estado actualizado.
     """
     atacante = estado["turno_actual"]
-    defensor = obtener_defensor(estado, atacante)
-    n = estado["n"]
-    punto = elegir_punto_aleatorio_no_disparado(estado["cubos"][defensor], n)
-    jugada = {"arma": armamento.LETRA_TORPEDO, "punto": punto, "eje": None, "valor": None}
+    dificultad = obtener_dificultad_turno(estado, atacante)
+    estrategia = ESTRATEGIAS_MAQUINA.get(dificultad, elegir_jugada_maquina_facil)
+    jugada = estrategia(estado, atacante)
     return ejecutar_turno(estado, jugada)
 
 
@@ -652,6 +777,15 @@ def iniciar_partida_1v1():
     ejecutar_bucle_turnos(estado)
 
 
+def pedir_dificultad_maquina(titulo=""):
+    print()
+    if titulo:
+        print(titulo)
+    print(TEXTO_MENU_DIFICULTAD)
+    opcion = pedir_opcion("Opcion: ", PATRON_OPCION_DIFICULTAD)
+    return OPCIONES_DIFICULTAD[opcion]
+
+
 def iniciar_partida_vs_maquina():
     n = tablero.TAMANO_CUBO_POR_DEFECTO
     cubo1, flota1 = ubicar_flota_jugador(NOMBRE_JUGADOR_1, n)
@@ -660,6 +794,7 @@ def iniciar_partida_vs_maquina():
     flota2 = ubicar_flota_automatica(cubo2, flota.crear_flota())
     print()
     print("La maquina ubico su flota.")
+    dificultad = pedir_dificultad_maquina()
     if not confirmar_inicio():
         return
     configuracion = {
@@ -667,7 +802,7 @@ def iniciar_partida_vs_maquina():
         "nombre_jugador_1": NOMBRE_JUGADOR_1, "cubo_jugador_1": cubo1, "flota_jugador_1": flota1,
         "nombre_jugador_2": NOMBRE_MAQUINA, "cubo_jugador_2": cubo2, "flota_jugador_2": flota2,
     }
-    estado = nueva_partida_vs_maquina(configuracion, "normal")
+    estado = nueva_partida_vs_maquina(configuracion, dificultad)
     ejecutar_bucle_turnos(estado)
 
 
@@ -682,13 +817,16 @@ def iniciar_partida_maquina_vs_maquina():
     cubo2 = tablero.crear_cubo(n)
     flota2 = ubicar_flota_automatica(cubo2, flota.crear_flota())
     print()
-    print("Ambas maquinas ubicaron su flota. Iniciando partida automatica...")
+    print("Ambas maquinas ubicaron su flota.")
+    dif1 = pedir_dificultad_maquina("--- Dificultad de " + NOMBRE_MAQUINA + " ---")
+    dif2 = pedir_dificultad_maquina("--- Dificultad de " + NOMBRE_MAQUINA_2 + " ---")
+    print("Iniciando partida automatica...")
     configuracion = {
         "n": n,
         "nombre_jugador_1": NOMBRE_MAQUINA, "cubo_jugador_1": cubo1, "flota_jugador_1": flota1,
         "nombre_jugador_2": NOMBRE_MAQUINA_2, "cubo_jugador_2": cubo2, "flota_jugador_2": flota2,
     }
-    estado = nueva_partida_maquina_vs_maquina(configuracion)
+    estado = nueva_partida_maquina_vs_maquina(configuracion, (dif1, dif2))
     ejecutar_bucle_turnos(estado)
 
 

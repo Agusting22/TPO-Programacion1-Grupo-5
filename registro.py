@@ -162,6 +162,7 @@ def serializar_estado(estado):
     datos["es_vs_maquina"] = estado["es_vs_maquina"]
     datos["es_maquina_vs_maquina"] = estado.get("es_maquina_vs_maquina", False)
     datos["dificultad"] = estado.get("dificultad", None)
+    datos["dificultades"] = estado.get("dificultades", None)
     # Cubos: 3D list de ints, ya es serializable
     datos["cubos"] = estado["cubos"]
     # Flotas
@@ -202,6 +203,8 @@ def deserializar_estado(datos):
     estado["es_maquina_vs_maquina"] = datos.get("es_maquina_vs_maquina", False)
     if datos.get("dificultad") is not None:
         estado["dificultad"] = datos["dificultad"]
+    if datos.get("dificultades") is not None:
+        estado["dificultades"] = datos["dificultades"]
     # Cubos
     estado["cubos"] = datos["cubos"]
     # Flotas

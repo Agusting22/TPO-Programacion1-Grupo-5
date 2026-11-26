@@ -163,3 +163,58 @@ def test_turno_maquina_en_maquina_vs_maquina_avanza_turno():
     # El turno debe haber avanzado (si no hay ganador)
     if partida.hay_ganador(estado) is None:
         assert estado["turno_actual"] != turno_antes
+
+
+def test_nueva_partida_vs_maquina_guarda_dificultad():
+    estado = partida.nueva_partida_vs_maquina(armar_configuracion(), "dificil")
+    assert estado["dificultad"] == "dificil"
+    assert estado["es_vs_maquina"] is True
+
+
+def test_nueva_partida_maquina_vs_maquina_acepta_tupla_dificultades():
+    config = armar_configuracion()
+    config["nombre_jugador_1"] = "M1"
+    config["nombre_jugador_2"] = "M2"
+    estado = partida.nueva_partida_maquina_vs_maquina(config, ("facil", "dificil"))
+    assert estado["dificultades"]["M1"] == "facil"
+    assert estado["dificultades"]["M2"] == "dificil"
+
+
+def test_turno_maquina_dificil_caza_nave_averiada():
+    estado = partida.nueva_partida_vs_maquina(armar_configuracion(), "dificil")
+    # Forzar el turno para Jugador 2 (la maquina) atacando a Jugador 1
+    estado["turno_actual"] = "Jugador 2"
+    # Agotar torpedo guiado para que use torpedo normal en modo caza
+    estado["municiones"]["Jugador 2"]["G"] = 0
+    # Jugador 1 tiene fragata en (1,1,1) y (1,1,2). Marcamos (1,1,1) como IMPACTO (averiada)
+    cubo_j1 = estado["cubos"]["Jugador 1"]
+    tablero.escribir_celda(cubo_j1, (1, 1, 1), tablero.IMPACTO)
+    nave = list(estado["flotas"]["Jugador 1"].values())[0]
+    nave["impactos"][(1, 1, 1)] = 1
+    # La maquina dificil debe disparar a una celda vecina ortogonal a (1,1,1), en particular (1,1,2)
+    partida.turno_maquina(estado)
+    jugada = estado["ultima_jugada"]
+    vecinos_111 = set(tablero.vecinos_ortogonales((1, 1, 1), estado["n"]))
+    assert jugada["punto"] in vecinos_111
+
+
+def test_turno_maquina_dificil_usa_torpedo_guiado_si_hay_averiada():
+    estado = partida.nueva_partida_vs_maquina(armar_configuracion(), "dificil")
+    estado["turno_actual"] = "Jugador 2"
+    cubo_j1 = estado["cubos"]["Jugador 1"]
+    tablero.escribir_celda(cubo_j1, (1, 1, 1), tablero.IMPACTO)
+    nave = list(estado["flotas"]["Jugador 1"].values())[0]
+    nave["impactos"][(1, 1, 1)] = 1
+    # Con torpedo guiado disponible (G=1), debe disparar G
+    partida.turno_maquina(estado)
+    jugada = estado["ultima_jugada"]
+    assert jugada["arma"] == "G"
+
+
+def test_pedir_dificultad_maquina_opcion_1_y_2(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda _: "1")
+    assert partida.pedir_dificultad_maquina() == "facil"
+
+    monkeypatch.setattr("builtins.input", lambda _: "2")
+    assert partida.pedir_dificultad_maquina() == "dificil"
+
