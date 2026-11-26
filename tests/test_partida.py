@@ -218,3 +218,30 @@ def test_pedir_dificultad_maquina_opcion_1_y_2(monkeypatch):
     monkeypatch.setattr("builtins.input", lambda _: "2")
     assert partida.pedir_dificultad_maquina() == "dificil"
 
+
+def test_vistas_recorridos_alternativos_cubo():
+    cubo = tablero.crear_cubo(4)
+    tablero.escribir_celda(cubo, (1, 1, 1), tablero.NAVE_OCULTA)
+    letras = {(1, 1, 1): "F"}
+    
+    # Octantes
+    texto_oct = partida.vista_octantes(cubo, letras, 4, None)
+    assert "Recorrido por octantes" in texto_oct
+    assert "(1,1,1) F" in texto_oct
+    
+    # Espiral
+    texto_esp = partida.vista_espiral(cubo, letras, 4, None)
+    assert "Recorrido en espiral" in texto_esp
+    assert "(1,1,1) F" in texto_esp
+    
+    # Propagacion
+    texto_prop = partida.vista_propagacion(cubo, letras, 4, (1, 1, 1))
+    assert "Recorrido por propagacion" in texto_prop
+    assert "(1,1,1) F" in texto_prop
+
+    # Verificacion de que esten en el diccionario de acciones de vista
+    assert partida.OPCION_VISTA_OCTANTES in partida.ACCIONES_VISTA_CUBO
+    assert partida.OPCION_VISTA_ESPIRAL in partida.ACCIONES_VISTA_CUBO
+    assert partida.OPCION_VISTA_PROPAGACION in partida.ACCIONES_VISTA_CUBO
+
+

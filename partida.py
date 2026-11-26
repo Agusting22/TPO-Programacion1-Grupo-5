@@ -41,6 +41,10 @@ OPCION_TURNO_GUARDAR = "4"
 OPCION_TURNO_SALIR = "5"
 OPCION_VISTA_CORTE_X = "2"
 OPCION_VISTA_CORTE_Y = "3"
+OPCION_VISTA_OCTANTES = "4"
+OPCION_VISTA_ESPIRAL = "5"
+OPCION_VISTA_PROPAGACION = "6"
+PATRON_OPCION_VISTA = r"^[1-6]$"
 
 SEMILLA_MAXIMA = 1000000
 MAX_INTENTOS_MAQUINA = 500
@@ -77,6 +81,9 @@ TEXTO_MENU_VISTA_CUBO = "\n".join([
     "1 - Capas en el eje z",
     "2 - Corte fijando x",
     "3 - Corte fijando y",
+    "4 - Recorrido por octantes",
+    "5 - Recorrido en espiral",
+    "6 - Recorrido por propagacion (desde el centro o ultimo impacto)",
 ])
 
 ETIQUETAS_EJE_CORTE = {OPCION_VISTA_CORTE_X: "x", OPCION_VISTA_CORTE_Y: "y"}
@@ -567,6 +574,22 @@ def vista_capas_z(cubo, letras, n, valor):
     return "\n\n".join(capas)
 
 
+def formatear_recorrido(cubo, puntos, letras_por_punto, titulo):
+    """
+    Objetivo: representar en texto una lista de puntos en orden de recorrido,
+    mostrando el simbolo de cada celda.
+    Parametros: cubo (list) tablero 3D, puntos (list) secuencia de tuplas (z, x, y),
+                letras_por_punto (dict o None) mapa de letras de naves propias,
+                titulo (str) encabezado de la vista.
+    Retorna: str con el recorrido formateado.
+    """
+    lineas = ["========= " + titulo + " ========="]
+    for punto in puntos:
+        simbolo = tablero.obtener_simbolo_celda(cubo, punto, letras_por_punto)
+        lineas.append(
+            "(" + str(punto[0]) + "," + str(punto[1]) + "," + str(punto[2]) + ") " + simbolo
+        )
+    return "\n".join(lineas)
 def vista_corte_x(cubo, letras, n, valor):
     return tablero.dibujar_corte_x(cubo, valor, letras)
 
@@ -575,10 +598,29 @@ def vista_corte_y(cubo, letras, n, valor):
     return tablero.dibujar_corte_y(cubo, valor, letras)
 
 
+def vista_octantes(cubo, letras, n, valor):
+    puntos = tablero.recorrido_octantes(n)
+    return formatear_recorrido(cubo, puntos, letras, "Recorrido por octantes")
+
+
+def vista_espiral(cubo, letras, n, valor):
+    puntos = tablero.recorrido_espiral(n)
+    return formatear_recorrido(cubo, puntos, letras, "Recorrido en espiral")
+
+
+def vista_propagacion(cubo, letras, n, valor):
+    origen = valor if valor is not None else None
+    puntos = tablero.recorrido_propagacion(n, origen)
+    return formatear_recorrido(cubo, puntos, letras, "Recorrido por propagacion")
+
+
 ACCIONES_VISTA_CUBO = {
     "1": vista_capas_z,
     OPCION_VISTA_CORTE_X: vista_corte_x,
     OPCION_VISTA_CORTE_Y: vista_corte_y,
+    OPCION_VISTA_OCTANTES: vista_octantes,
+    OPCION_VISTA_ESPIRAL: vista_espiral,
+    OPCION_VISTA_PROPAGACION: vista_propagacion,
 }
 
 
@@ -591,6 +633,17 @@ def mostrar_cubo_propio_y_rival(estado, jugador_actual):
     opcion = pedir_opcion("Opcion: ", PATRON_OPCION_VISTA)
     if opcion in ETIQUETAS_EJE_CORTE:
         valor = pedir_valor_eje(n, ETIQUETAS_EJE_CORTE[opcion])
+    elif opcion == OPCION_VISTA_PROPAGACION:
+        print("Punto de origen para la propagacion (Enter = centro del cubo):")
+        texto = input("Origen (z,x,y): ").strip()
+        if texto == "":
+            valor = None
+        else:
+            try:
+                valor = parsear_punto(texto, n)
+            except tablero.PuntoInvalidoError:
+                print(MENSAJE_INVALIDO + " Usando el centro del cubo.")
+                valor = None
     else:
         valor = None
     letras_propio = flota.obtener_letras_por_punto(estado["flotas"][jugador_actual])
