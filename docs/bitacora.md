@@ -39,7 +39,7 @@ Integrador de esta entrega: Agustin Gonzalez
 | flota.py (Persistencia) | Datos de la flota para guardar y reponer la partida (guardar_datos_flota, reponer_flota, reponer_flota_en_cubo, validar_datos_flota) | Francisco Pavlicich |
 | armamento.py (Armas avanzadas) | Onda expansiva (propagacion recursiva) y Torpedo guiado (busqueda contigua recursiva) | Kevin Palma |
 | radar.py (Busquedas recursivas) | Busqueda recursiva (capa por capa) | Agustin Gonzalez |
-| registro.py (Persistencia JSON y ranking) | Guardado y carga en JSON, listado de partidas y ranking | A designar por el equipo |
+| registro.py (Persistencia JSON y ranking) | Guardado y carga en JSON, listado de partidas y ranking | Francisco Pavlicich |
 | partida.py / main.py (Integrador E3) | Maquina vs maquina, continuar partida guardada, guardar y salir, maquina con dos niveles | Agustin Gonzalez |
 
 Integrador de esta entrega: Agustin Gonzalez
