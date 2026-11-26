@@ -6,9 +6,9 @@
 |--------|-------------------------|-------------|
 | tablero.py (Nucleo 3D) | Cubo, excepciones base (ErrorCubo, PuntoInvalidoError), coordenadas 3D y validacion | Agustin Cangiani |
 | tablero.py (Algebra y Render) | Operaciones de matrices (suma, resta, multiplicacion, traspuesta) y dibujar_capa | Kevin Palma |
-| flota.py (Reglas y Catalogo) | Catalogo de naves, adyacencias en 26 direcciones y restricciones por nave | Thiago Negri |
+| flota.py (Reglas y Catalogo) | Catalogo de naves, adyacencias en 26 direcciones y restricciones por nave | Francisco Pavlicich |
 | flota.py (Algoritmos) | Algoritmo de ubicacion automatica con semilla y colocacion manual interactiva | Francisco Pavlicich |
-| radar.py / armamento.py / registro.py | Busqueda lineal con metricas, catalogo de armas (torpedo) e historial en memoria | Angel Nogales |
+| radar.py / armamento.py / registro.py | Busqueda lineal con metricas, catalogo de armas (torpedo) e historial en memoria | Kevin Palma |
 | partida.py / main.py (integrador) | Menu principal, submenu de ubicacion, validacion con regex y flujo general | Agustin Gonzalez |
 
 Integrador de esta entrega: Agustin Gonzalez
@@ -18,11 +18,11 @@ Integrador de esta entrega: Agustin Gonzalez
 | Modulo | Alcance de la Entrega 2 | Responsable |
 |--------|--------------------------|-------------|
 | tablero.py (Cortes y vecinos) | Vecinos ortogonales, cortes fijando x y fijando y | Agustin Cangiani |
-| flota.py (Impactos y estado) | Registro de impactos, estado sana/averiada/hundida, comportamientos de Destructor, Submarino y Portaaviones | Thiago Negri |
+| flota.py (Impactos y estado) | Registro de impactos, estado sana/averiada/hundida, comportamientos de Destructor, Submarino y Portaaviones | Agustin Cangiani |
 | flota.py (Estacion y revelado) | Municion extra al hundir la estacion orbital, eleccion de la celda a revelar | Francisco Pavlicich |
-| radar.py (Busqueda optimizada y sonar) | Busqueda optimizada por indice de flota, sonar por planos | Angel Nogales |
+| radar.py (Busqueda optimizada y sonar) | Busqueda optimizada por indice de flota, sonar por planos | Kevin Palma |
 | armamento.py (Arsenal nuevo) | Misil de racimo, carga de profundidad, barrido laser y manejo de municion por diccionario | Kevin Palma |
-| registro.py (Estadisticas) | Estadisticas de la partida y resumen final | Angel Nogales |
+| registro.py (Estadisticas) | Estadisticas de la partida y resumen final | Agustin Cangiani |
 | partida.py / main.py (Turnos y partida completa) | Estado de partida, turnos, partida 1v1 y contra la maquina, submenus de disparo y de vista del cubo | Agustin Gonzalez |
 
 Nota: la municion extra de la Estacion orbital se otorga sobre el Misil de
