@@ -10,7 +10,7 @@ import tablero
 PATRON_OPCION_MENU = r"^[1-5]$"
 PATRON_OPCION_UBICACION = r"^[12]$"
 PATRON_OPCION_TURNO = r"^[1-5]$"
-PATRON_OPCION_VISTA = r"^[1-6]$"
+PATRON_OPCION_VISTA = r"^[1-8]$"
 PATRON_OPCION_PAUSA = r"^[1-4]$"
 PATRON_PUNTO = r"^\d{1,2},\d{1,2},\d{1,2}$"
 PATRON_TRAMO = r"^\d{1,2},\d{1,2},\d{1,2}-\d{1,2},\d{1,2},\d{1,2}$"
@@ -21,6 +21,8 @@ PATRON_EJE_SONAR = r"^[ZXY]$"
 PATRON_NUMERO = r"^\d{1,2}$"
 PATRON_CONFIRMACION = r"^[SN]$"
 PATRON_NOMBRE_PARTIDA = r"^[\w\-]{1,30}$"
+# Nombres que Windows reserva para dispositivos y no sirven como archivo
+PATRON_NOMBRE_RESERVADO = r"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$"
 PATRON_OPCION_DIFICULTAD = r"^[12]$"
 
 DIFICULTAD_FACIL = "facil"
@@ -34,8 +36,8 @@ OPCIONES_DIFICULTAD = {
 OPCION_SALIR = "5"
 OPCION_TURNO_DISPARAR = "1"
 OPCION_TURNO_VER_CUBO = "2"
-OPCION_TURNO_RADAR = "3"
-OPCION_TURNO_GUARDAR = "4"
+OPCION_TURNO_GUARDAR = "3"
+OPCION_TURNO_RADAR = "4"
 OPCION_TURNO_SALIR = "5"
 OPCION_VISTA_CAPAS = "1"
 OPCION_VISTA_CORTE_X = "2"
@@ -43,6 +45,8 @@ OPCION_VISTA_CORTE_Y = "3"
 OPCION_VISTA_OCTANTES = "4"
 OPCION_VISTA_ESPIRAL = "5"
 OPCION_VISTA_PROPAGACION = "6"
+OPCION_VISTA_CAPAS_X = "7"
+OPCION_VISTA_CAPAS_Y = "8"
 OPCION_PAUSA_CONTINUAR = "1"
 OPCION_PAUSA_UN_TURNO = "2"
 OPCION_PAUSA_GUARDAR = "3"
@@ -58,6 +62,7 @@ NOMBRE_JUGADOR_2 = "Jugador 2"
 NOMBRE_MAQUINA = "Maquina"
 NOMBRE_MAQUINA_2 = "Maquina 2"
 NOMBRE_PARTIDA_SIN_GUARDAR = "sin_nombre"
+NAVES_DE_NOMBRE_FEMENINO = (flota.LETRA_FRAGATA, flota.LETRA_ESTACION)
 MENSAJE_NO_UBICADA = "No se puede ubicar ahi. Intente de nuevo."
 MENSAJE_INVALIDO = "Dato invalido. Intente de nuevo."
 MENSAJE_ENTRADA_FINALIZADA = "Entrada finalizada. Saliendo del juego."
@@ -84,8 +89,8 @@ TEXTO_MENU_UBICACION = "\n".join(["1 - Ubicacion manual", "2 - Ubicacion automat
 TEXTO_MENU_TURNO = "\n".join([
     "1 - Disparar",
     "2 - Ver el cubo",
-    "3 - Reporte de radar (metricas)",
-    "4 - Guardar y salir",
+    "3 - Guardar y salir",
+    "4 - Reporte de radar (metricas)",
     "5 - Salir de la partida",
 ])
 TEXTO_MENU_VISTA_CUBO = "\n".join([
@@ -95,6 +100,8 @@ TEXTO_MENU_VISTA_CUBO = "\n".join([
     "4 - Recorrido por octantes",
     "5 - Recorrido en espiral",
     "6 - Recorrido por propagacion (desde el centro)",
+    "7 - Recorrido por capas en el eje x",
+    "8 - Recorrido por capas en el eje y",
 ])
 TEXTO_MENU_PAUSA = "\n".join([
     "1 - Continuar (proxima pausa en " + str(TURNOS_ENTRE_PAUSAS) + " turnos)",
@@ -457,8 +464,9 @@ def ejecutar_turno(estado, jugada):
     Objetivo: aplicar la jugada del jugador en turno y actualizar la partida.
     Parametros: estado, jugada ({\"arma\", \"punto\", \"eje\", \"valor\"}).
     Retorna: estado actualizado.
-    Lanza: MunicionAgotadaError, ObjetivoYaDisparadoError y las excepciones
-    propias de armamento/flota/tablero si la jugada no es valida.
+    Lanza: ArmaInvalidaError si el arma no existe o su eje no sirve,
+    MunicionAgotadaError, ObjetivoYaDisparadoError, PuntoInvalidoError y
+    EjeInvalidoError si la jugada no es valida. En esos casos no se descuenta municion.
     """
     atacante = estado["turno_actual"]
     defensor = obtener_defensor(estado, atacante)
@@ -466,6 +474,8 @@ def ejecutar_turno(estado, jugada):
     municion_atacante = estado["municiones"][atacante]
     cubo_defensor = estado["cubos"][defensor]
     flota_defensor = estado["flotas"][defensor]
+    if letra_arma not in armamento.CATALOGO_ARMAS:
+        raise armamento.ArmaInvalidaError("Arma inexistente: " + str(letra_arma))
     if not armamento.hay_municion(municion_atacante, letra_arma):
         raise armamento.MunicionAgotadaError("Sin municion de " + letra_arma)
     if letra_arma == armamento.LETRA_SONAR:
@@ -477,10 +487,10 @@ def ejecutar_turno(estado, jugada):
         estado_actual = tablero.leer_celda(cubo_defensor, punto)
         if estado_actual in (tablero.AGUA_MARCADA, tablero.IMPACTO, tablero.HUNDIDO):
             raise ObjetivoYaDisparadoError("Ese punto ya fue disparado")
-        armamento.descontar_municion(municion_atacante, letra_arma)
         resultado = armamento.aplicar_disparo(
             cubo_defensor, flota_defensor, letra_arma, punto, jugada.get("eje"), armamento.CATALOGO_ARMAS
         )
+        armamento.descontar_municion(municion_atacante, letra_arma)
         jugada["resultado"] = resultado
         hubo_impacto = len(resultado["celdas_impactadas"]) > 0
         registro.registrar_disparo(estado["estadisticas"], atacante, hubo_impacto)
@@ -670,14 +680,37 @@ def hay_ganador(estado):
     return estado["ganador"]
 
 
+def concordar_estado(tipo, estado_nave):
+    """
+    Objetivo: ajustar el genero del estado de una nave segun su nombre.
+    Parametros: tipo (str) letra de la nave, estado_nave (str) estado en femenino.
+    Retorna: str estado que concuerda con el nombre de la nave.
+    """
+    if tipo in NAVES_DE_NOMBRE_FEMENINO:
+        return estado_nave
+    return estado_nave[:-1] + "o"
+
+
+def formatear_contactos(cantidad):
+    """
+    Objetivo: armar el texto con la cantidad de contactos del sonar.
+    Parametros: cantidad (int) celdas detectadas.
+    Retorna: str texto en singular o plural.
+    """
+    if cantidad == 1:
+        return "1 contacto detectado."
+    return str(cantidad) + " contactos detectados."
+
+
 def formatear_mensaje_resultado(flota_defensor, resultado):
     """
     Objetivo: armar el mensaje con el resultado de un disparo o del sonar.
     Parametros: flota_defensor (dict), resultado (dict) de la jugada.
     Retorna: str mensaje.
+    Lanza: KeyError si el resultado o la flota estan incompletos.
     """
     if resultado.get("tipo") == "sonar":
-        return "Sonar activado. Se revelaron " + str(len(resultado["reveladas"])) + " celdas."
+        return formatear_contactos(len(resultado["reveladas"]))
     if len(resultado["celdas_impactadas"]) == 0:
         return "Agua."
     mensajes = []
@@ -688,7 +721,7 @@ def formatear_mensaje_resultado(flota_defensor, resultado):
         naves_mencionadas.add(id_nave)
         nave = flota_defensor[id_nave]
         nombre_nave = flota.CATALOGO_NAVES[tipo]["nombre"]
-        estado_nave = flota.obtener_estado_nave(nave)
+        estado_nave = concordar_estado(tipo, flota.obtener_estado_nave(nave))
         impactadas = flota.contar_celdas_impactadas(nave)
         total = len(nave["puntos"])
         mensajes.append(
@@ -713,12 +746,16 @@ def obtener_celda_alcanzada(jugada):
 
 def formatear_mensaje_jugada(flota_defensor, jugada):
     """
-    Objetivo: armar el mensaje de una jugada, indicando la celda alcanzada por el
-    torpedo guiado.
+    Objetivo: armar el mensaje de una jugada, indicando el plano revisado por el
+    sonar o la celda alcanzada por el torpedo guiado.
     Parametros: flota_defensor (dict), jugada (dict) ya ejecutada.
     Retorna: str mensaje.
+    Lanza: KeyError si la jugada o la flota estan incompletas.
     """
     mensaje = formatear_mensaje_resultado(flota_defensor, jugada["resultado"])
+    if jugada["arma"] == armamento.LETRA_SONAR:
+        plano = jugada["eje"] + " = " + str(jugada["valor"])
+        return "Sonar sobre el plano " + plano + ". " + mensaje
     es_guiado = jugada["arma"] == armamento.LETRA_TORPEDO_GUIADO
     if es_guiado and len(jugada["resultado"]["celdas_impactadas"]) > 0:
         celda = obtener_celda_alcanzada(jugada)
@@ -841,6 +878,7 @@ def vista_corte_x(cubo, letras, n, valor):
     Objetivo: dibujar el corte del cubo fijando x.
     Parametros: cubo (list), letras (dict) naves visibles, n (int), valor (int) de x.
     Retorna: str con la vista.
+    Lanza: PuntoInvalidoError si x esta fuera del cubo.
     """
     return tablero.dibujar_corte_x(cubo, valor, letras)
 
@@ -850,6 +888,7 @@ def vista_corte_y(cubo, letras, n, valor):
     Objetivo: dibujar el corte del cubo fijando y.
     Parametros: cubo (list), letras (dict) naves visibles, n (int), valor (int) de y.
     Retorna: str con la vista.
+    Lanza: PuntoInvalidoError si y esta fuera del cubo.
     """
     return tablero.dibujar_corte_y(cubo, valor, letras)
 
@@ -860,7 +899,7 @@ def vista_octantes(cubo, letras, n, valor):
     Parametros: cubo (list), letras (dict) naves visibles, n (int), valor (no se usa).
     Retorna: str con la vista.
     """
-    puntos = tablero.recorrido_octantes(n)
+    puntos = radar.recorrido_octantes(n)
     return formatear_recorrido(cubo, puntos, letras, "Recorrido por octantes")
 
 
@@ -870,7 +909,7 @@ def vista_espiral(cubo, letras, n, valor):
     Parametros: cubo (list), letras (dict) naves visibles, n (int), valor (no se usa).
     Retorna: str con la vista.
     """
-    puntos = tablero.recorrido_espiral(n)
+    puntos = radar.recorrido_espiral(n)
     return formatear_recorrido(cubo, puntos, letras, "Recorrido en espiral")
 
 
@@ -882,8 +921,28 @@ def vista_propagacion(cubo, letras, n, valor):
     Retorna: str con la vista.
     Lanza: PuntoInvalidoError si el origen esta fuera del cubo.
     """
-    puntos = tablero.recorrido_propagacion(n, valor)
+    puntos = radar.recorrido_propagacion(n, valor)
     return formatear_recorrido(cubo, puntos, letras, "Recorrido por propagacion")
+
+
+def vista_recorrido_capas_x(cubo, letras, n, valor):
+    """
+    Objetivo: mostrar el cubo con el recorrido capa por capa de x.
+    Parametros: cubo (list), letras (dict) naves visibles, n (int), valor (no se usa).
+    Retorna: str con la vista.
+    """
+    puntos = tablero.recorrido_capas_x(n)
+    return formatear_recorrido(cubo, puntos, letras, "Recorrido por capas de x")
+
+
+def vista_recorrido_capas_y(cubo, letras, n, valor):
+    """
+    Objetivo: mostrar el cubo con el recorrido capa por capa de y.
+    Parametros: cubo (list), letras (dict) naves visibles, n (int), valor (no se usa).
+    Retorna: str con la vista.
+    """
+    puntos = tablero.recorrido_capas_y(n)
+    return formatear_recorrido(cubo, puntos, letras, "Recorrido por capas de y")
 
 
 ACCIONES_VISTA_CUBO = {
@@ -893,6 +952,8 @@ ACCIONES_VISTA_CUBO = {
     OPCION_VISTA_OCTANTES: vista_octantes,
     OPCION_VISTA_ESPIRAL: vista_espiral,
     OPCION_VISTA_PROPAGACION: vista_propagacion,
+    OPCION_VISTA_CAPAS_X: vista_recorrido_capas_x,
+    OPCION_VISTA_CAPAS_Y: vista_recorrido_capas_y,
 }
 
 
@@ -950,6 +1011,8 @@ PEDIDOS_VALOR_VISTA = {
     OPCION_VISTA_OCTANTES: pedir_sin_valor,
     OPCION_VISTA_ESPIRAL: pedir_sin_valor,
     OPCION_VISTA_PROPAGACION: pedir_origen_propagacion,
+    OPCION_VISTA_CAPAS_X: pedir_sin_valor,
+    OPCION_VISTA_CAPAS_Y: pedir_sin_valor,
 }
 
 
@@ -982,6 +1045,7 @@ def accion_disparar(estado, jugador_actual):
     Objetivo: resolver la opcion de disparar del menu de turno.
     Parametros: estado (dict), jugador_actual (str).
     Retorna: True para continuar la partida.
+    Lanza: EOFError si se termina la entrada de datos.
     """
     realizar_disparo(estado, jugador_actual)
     return True
@@ -992,6 +1056,7 @@ def accion_ver_cubo(estado, jugador_actual):
     Objetivo: resolver la opcion de ver el cubo del menu de turno.
     Parametros: estado (dict), jugador_actual (str).
     Retorna: True para continuar la partida.
+    Lanza: EOFError si se termina la entrada de datos.
     """
     mostrar_cubo_propio_y_rival(estado, jugador_actual)
     return True
@@ -1055,10 +1120,21 @@ def pedir_nombre_partida():
     Lanza: EOFError si se termina la entrada de datos.
     """
     texto = input("Nombre de la partida: ").strip()
-    while not validar_opcion(texto, PATRON_NOMBRE_PARTIDA):
+    while not es_nombre_partida_valido(texto):
         print("Nombre invalido. Use solo letras, numeros, guiones (1-30 caracteres).")
         texto = input("Nombre de la partida: ").strip()
     return texto
+
+
+def es_nombre_partida_valido(texto):
+    """
+    Objetivo: verificar que un texto sirva como nombre de partida y de archivo.
+    Parametros: texto (str) nombre tipeado.
+    Retorna: bool True si cumple el formato y no es un nombre reservado.
+    """
+    if not validar_opcion(texto, PATRON_NOMBRE_PARTIDA):
+        return False
+    return not validar_opcion(texto.upper(), PATRON_NOMBRE_RESERVADO)
 
 
 def guardar_partida_actual(estado):
@@ -1072,7 +1148,7 @@ def guardar_partida_actual(estado):
     guardada = False
     try:
         registro.guardar_partida(estado, nombre)
-    except OSError as error:
+    except (OSError, ValueError) as error:
         print("Error al guardar: " + str(error))
     else:
         estado["nombre_partida"] = nombre
@@ -1086,6 +1162,7 @@ def accion_guardar_partida(estado, jugador_actual):
     Objetivo: resolver la opcion de guardar y salir del menu de turno.
     Parametros: estado (dict), jugador_actual (str).
     Retorna: False para salir si se guardo, True para continuar si hubo un error.
+    Lanza: EOFError si se termina la entrada de datos.
     """
     return not guardar_partida_actual(estado)
 
@@ -1127,15 +1204,20 @@ def ejecutar_turno_maquina(estado):
     Objetivo: jugar un turno automatico y mostrar su resultado.
     Parametros: estado (dict).
     Retorna: None.
+    Lanza: las mismas excepciones que ejecutar_turno.
     """
     atacante = estado["turno_actual"]
     defensor = obtener_defensor(estado, atacante)
+    quien = "la maquina"
+    if estado.get("es_maquina_vs_maquina", False):
+        quien = atacante
     print()
-    print("Turno de " + atacante + " (automatico)...")
+    print("--- Turno de " + quien + " ---")
     turno_maquina(estado)
     jugada = estado["ultima_jugada"]
-    print("Objetivo: " + formatear_punto(obtener_celda_alcanzada(jugada)))
-    print(formatear_mensaje_jugada(estado["flotas"][defensor], jugada))
+    celda = formatear_punto(obtener_celda_alcanzada(jugada))
+    resultado = formatear_mensaje_resultado(estado["flotas"][defensor], jugada["resultado"])
+    print("Dispara a " + celda + ". " + resultado)
 
 
 def pausa_continuar(estado):
@@ -1161,6 +1243,7 @@ def pausa_guardar_y_salir(estado):
     Objetivo: guardar la partida automatica y salir.
     Parametros: estado (dict).
     Retorna: 0 para salir si se guardo, None para volver a preguntar si hubo un error.
+    Lanza: EOFError si se termina la entrada de datos.
     """
     if guardar_partida_actual(estado):
         return 0
@@ -1258,7 +1341,7 @@ def registrar_y_mostrar_ranking(estado):
     except registro.RankingInvalidoError:
         print()
         print(MENSAJE_RANKING_DANADO)
-    except OSError as error:
+    except (OSError, ValueError) as error:
         print()
         print("No se pudo guardar el ranking: " + str(error))
     else:
@@ -1339,9 +1422,10 @@ def iniciar_partida_1v1():
     Objetivo: preparar y jugar una partida uno contra uno.
     Parametros: ninguno.
     Retorna: None.
-    Lanza: EOFError si se termina la entrada de datos.
+    Lanza: EOFError si se termina la entrada de datos, TamanoInvalidoError si el
+    tamano configurado no sirve para jugar.
     """
-    n = tablero.TAMANO_CUBO_POR_DEFECTO
+    n = tablero.validar_tamano(tablero.TAMANO_CUBO)
     cubo1, flota1 = ubicar_flota_jugador(NOMBRE_JUGADOR_1, n)
     mostrar_estado(cubo1, flota1)
     cubo2, flota2 = ubicar_flota_jugador(NOMBRE_JUGADOR_2, n)
@@ -1377,9 +1461,10 @@ def iniciar_partida_vs_maquina():
     Objetivo: preparar y jugar una partida contra la maquina.
     Parametros: ninguno.
     Retorna: None.
-    Lanza: EOFError si se termina la entrada de datos.
+    Lanza: EOFError si se termina la entrada de datos, TamanoInvalidoError si el
+    tamano configurado no sirve para jugar.
     """
-    n = tablero.TAMANO_CUBO_POR_DEFECTO
+    n = tablero.validar_tamano(tablero.TAMANO_CUBO)
     cubo1, flota1 = ubicar_flota_jugador(NOMBRE_JUGADOR_1, n)
     mostrar_estado(cubo1, flota1)
     cubo2 = tablero.crear_cubo(n)
@@ -1405,9 +1490,10 @@ def iniciar_partida_maquina_vs_maquina():
     con pausas periodicas que permiten guardar y salir.
     Parametros: ninguno.
     Retorna: None.
-    Lanza: EOFError si se termina la entrada de datos.
+    Lanza: EOFError si se termina la entrada de datos, TamanoInvalidoError si el
+    tamano configurado no sirve para jugar.
     """
-    n = tablero.TAMANO_CUBO_POR_DEFECTO
+    n = tablero.validar_tamano(tablero.TAMANO_CUBO)
     cubo1 = tablero.crear_cubo(n)
     flota1 = ubicar_flota_automatica(cubo1, flota.crear_flota())
     cubo2 = tablero.crear_cubo(n)
@@ -1511,9 +1597,9 @@ def ejecutar_menu_principal():
                 opcion = pedir_opcion("Opcion: ", PATRON_OPCION_MENU)
                 try:
                     ACCIONES_MENU_PRINCIPAL[opcion]()
-                except tablero.ErrorCubo as error:
+                except (tablero.ErrorCubo, UnicodeEncodeError) as error:
                     print("No se pudo completar la accion: " + str(error))
-        except EOFError:
+        except (EOFError, UnicodeDecodeError):
             print()
             print(MENSAJE_ENTRADA_FINALIZADA)
     except KeyboardInterrupt:

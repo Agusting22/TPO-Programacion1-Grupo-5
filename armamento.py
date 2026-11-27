@@ -27,6 +27,7 @@ def obtener_celdas_torpedo(punto, n, eje):
     Objetivo: calcular las celdas afectadas por el torpedo.
     Parametros: punto apuntado, n tamano del cubo, eje (no se usa).
     Retorna: lista con la unica celda apuntada.
+    Lanza: PuntoInvalidoError si el punto esta fuera del cubo.
     """
     tablero.validar_punto(punto, n)
     return [punto]
@@ -37,6 +38,7 @@ def obtener_celdas_racimo(punto, n, eje):
     Objetivo: calcular las celdas del misil de racimo.
     Parametros: punto apuntado, n tamano del cubo, eje (no se usa).
     Retorna: la celda apuntada mas sus vecinas ortogonales.
+    Lanza: PuntoInvalidoError si el punto esta fuera del cubo.
     """
     tablero.validar_punto(punto, n)
     celdas = [punto]
@@ -50,6 +52,7 @@ def obtener_celdas_carga_profundidad(punto, n, eje):
     Objetivo: calcular las celdas de la carga de profundidad.
     Parametros: punto apuntado, n tamano del cubo, eje (no se usa).
     Retorna: toda la recta del eje z que pasa por el punto.
+    Lanza: PuntoInvalidoError si el punto esta fuera del cubo.
     """
     tablero.validar_punto(punto, n)
     celdas = []
@@ -69,7 +72,8 @@ def obtener_celdas_laser(punto, n, eje):
     Objetivo: calcular las celdas del barrido laser sobre el eje x o el eje y.
     Parametros: punto apuntado, n tamano del cubo, eje ("x" o "y").
     Retorna: la recta completa sobre el eje elegido.
-    Lanza: ArmaInvalidaError si el eje no es "x" ni "y".
+    Lanza: ArmaInvalidaError si el eje no es "x" ni "y", PuntoInvalidoError si el
+    punto esta fuera del cubo.
     """
     tablero.validar_punto(punto, n)
     if eje not in CONSTRUCTORES_LASER:
@@ -110,6 +114,7 @@ def obtener_celdas_onda_expansiva(punto, n, eje, radio=RADIO_ONDA_EXPANSIVA):
     recursiva con radio decreciente.
     Parametros: punto apuntado (z, x, y), tamano n del cubo, eje (no se usa), radio inicial.
     Retorna: lista de celdas alcanzadas.
+    Lanza: PuntoInvalidoError si el punto esta fuera del cubo.
     """
     tablero.validar_punto(punto, n)
     visitados = {}
@@ -185,6 +190,7 @@ def obtener_celdas_torpedo_guiado(punto, n, eje, flota_rival=None, cubo_rival=No
     Parametros: punto apuntado (z, x, y), tamano n del cubo, eje (no se usa),
     flota_rival (opcional), cubo_rival (opcional).
     Retorna: lista con la celda objetivo.
+    Lanza: PuntoInvalidoError si el punto esta fuera del cubo.
     """
     if punto is not None:
         tablero.validar_punto(punto, n)
@@ -263,7 +269,8 @@ def aplicar_disparo(cubo_rival, flota_rival, letra_arma, punto, eje, catalogo):
     Parametros: cubo_rival, flota_rival, letra_arma, punto apuntado, eje (para
     el laser), catalogo de armas.
     Retorna: diccionario con celdas_impactadas, celdas_agua y naves_hundidas.
-    Lanza: ArmaInvalidaError si el arma no aplica dano directo (por ej. Sonar).
+    Lanza: ArmaInvalidaError si el arma no aplica dano directo (por ej. Sonar) o el
+    eje del laser no sirve, PuntoInvalidoError si el punto esta fuera del cubo.
     """
     if letra_arma not in catalogo or catalogo[letra_arma]["celdas"] is None:
         raise ArmaInvalidaError("Arma invalida para disparo directo: " + str(letra_arma))

@@ -248,7 +248,7 @@ def _validar_datos_partida(datos):
     Objetivo: verificar la estructura de una partida guardada antes de reconstruirla.
     Parametros: datos (dato leido de JSON).
     Retorna: None.
-    Lanza: ErrorCubo, KeyError o TypeError si los datos estan mal formados.
+    Lanza: ErrorCubo, KeyError, TypeError o ValueError si los datos estan mal formados.
     """
     _exigir(isinstance(datos, dict), "El archivo no contiene una partida")
     n = datos["n"]
@@ -256,6 +256,8 @@ def _validar_datos_partida(datos):
     jugadores = [datos["jugador_1"], datos["jugador_2"]]
     for nombre in jugadores:
         _exigir(isinstance(nombre, str), "Nombre de jugador invalido")
+        # Lanza ValueError si el nombre tiene caracteres que no se pueden escribir
+        nombre.encode("utf-8")
         _validar_datos_jugador(datos, nombre, n)
     _exigir(jugadores[0] != jugadores[1], "Jugadores repetidos")
     _exigir(datos["turno_actual"] in jugadores, "Turno invalido")
@@ -375,18 +377,34 @@ def _ruta_partida(nombre):
     return os.path.join(DIRECTORIO_PARTIDAS, nombre + ".json")
 
 
+def _escribir_texto(ruta, texto):
+    """
+    Objetivo: escribir un archivo de texto sin danar el existente si el texto no
+    se puede codificar.
+    Parametros: ruta (str), texto (str) contenido completo.
+    Retorna: None.
+    Lanza: ValueError si el texto no se puede codificar (el archivo no se abre),
+    OSError si no se puede escribir.
+    """
+    texto.encode("utf-8")
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        archivo.write(texto)
+
+
 def guardar_partida(estado, nombre):
     """
     Objetivo: guardar el estado de la partida en un archivo JSON.
     Parametros: estado (dict), nombre (str sin extension).
-    Retorna: None.
-    Lanza: OSError si no se puede escribir el archivo.
+    Retorna: str ruta relativa del archivo escrito.
+    Lanza: OSError si no se puede escribir el archivo, ValueError si hay textos que
+    no se pueden codificar, KeyError si al estado le faltan datos, TypeError si
+    tiene valores que no se pueden guardar en JSON.
     """
     os.makedirs(DIRECTORIO_PARTIDAS, exist_ok=True)
     datos = serializar_estado(estado)
     ruta = _ruta_partida(nombre)
-    with open(ruta, "w", encoding="utf-8") as archivo:
-        json.dump(datos, archivo, ensure_ascii=False, indent=2)
+    _escribir_texto(ruta, json.dumps(datos, ensure_ascii=False, indent=2))
+    return ruta
 
 
 def cargar_partida(nombre):
@@ -430,7 +448,8 @@ def guardar_ranking(ganador, nombre_partida, turnos, es_vs_maquina):
     es_vs_maquina (bool).
     Retorna: None.
     Lanza: RankingInvalidoError si el archivo existente esta danado (no se modifica),
-    OSError si no se puede escribir.
+    OSError si no se puede escribir, ValueError si hay textos que no se pueden
+    codificar (el archivo no se modifica).
     """
     ranking = listar_ranking()
     entrada = {
@@ -441,8 +460,7 @@ def guardar_ranking(ganador, nombre_partida, turnos, es_vs_maquina):
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
     ranking.append(entrada)
-    with open(ARCHIVO_RANKING, "w", encoding="utf-8") as archivo:
-        json.dump(ranking, archivo, ensure_ascii=False, indent=2)
+    _escribir_texto(ARCHIVO_RANKING, json.dumps(ranking, ensure_ascii=False, indent=2))
 
 
 def _es_entrada_valida(entrada):
@@ -596,11 +614,11 @@ def exportar_reporte(estado, nombre):
     Objetivo: escribir el reporte de una partida en un archivo de texto.
     Parametros: estado (dict), nombre (str sin extension).
     Retorna: str ruta relativa del archivo escrito.
-    Lanza: OSError si no se puede escribir el archivo.
+    Lanza: OSError si no se puede escribir el archivo, ValueError si hay textos que no
+    se pueden codificar (un reporte anterior se conserva), KeyError o TypeError si el
+    estado esta incompleto o mal formado.
     """
     os.makedirs(DIRECTORIO_EXPORTACIONES, exist_ok=True)
     ruta = os.path.join(DIRECTORIO_EXPORTACIONES, nombre + ".txt")
-    texto = formatear_reporte(estado, nombre)
-    with open(ruta, "w", encoding="utf-8") as archivo:
-        archivo.write(texto)
+    _escribir_texto(ruta, formatear_reporte(estado, nombre))
     return ruta

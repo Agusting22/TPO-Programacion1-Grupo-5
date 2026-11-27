@@ -279,6 +279,7 @@ def agregar_nave_a_flota(cubo, flota, letra, puntos):
     Parametros: cubo (list) tablero 3D, flota (dict) flota del jugador, letra (str) tipo de nave,
                 puntos (list) coordenadas ocupadas por la nave.
     Retorna: tuple par (cubo, flota) actualizados.
+    Lanza: PuntoInvalidoError si algun punto esta fuera del cubo.
     """
     id_nave = f"{letra}{contar_naves_tipo(flota, letra) + 1}"
     flota[id_nave] = {"tipo": letra, "puntos": set(puntos), "impactos": {}, "hundida": False}
@@ -351,6 +352,8 @@ def generar_puntos_al_azar(letra, n, catalogo):
     Retorna: list lista de puntos candidatos o lista vacia si excede el borde del cubo.
     """
     if letra == LETRA_ESTACION:
+        if n - LADO_ESTACION < 2:
+            return []
         z = random.randint(2, n - LADO_ESTACION)
         x = random.randint(2, n - LADO_ESTACION)
         y = random.randint(2, n - LADO_ESTACION)
@@ -369,6 +372,7 @@ def quitar_flota_del_cubo(cubo, flota):
     Objetivo: limpiar del cubo todas las celdas ocupadas por las naves de una flota.
     Parametros: cubo (list) tablero 3D, flota (dict) diccionario de naves a remover.
     Retorna: list el cubo con las celdas restauradas a agua sin explorar.
+    Lanza: PuntoInvalidoError si la flota tiene puntos fuera del cubo.
     """
     for id_nave in flota:
         for punto in flota[id_nave]["puntos"]:
@@ -524,6 +528,7 @@ def elegir_celda_para_revelar(flota_jugador, cubo_jugador):
     Objetivo: seleccionar al azar una celda con nave oculta que aun no fue revelada ni impactada.
     Parametros: flota_jugador (dict) flota del jugador, cubo_jugador (list) tablero 3D del jugador.
     Retorna: tuple coordenada (z, x, y) seleccionada al azar o None si no quedan celdas ocultas.
+    Lanza: PuntoInvalidoError si la flota tiene puntos fuera del cubo.
     """
     candidatos = []
     for id_nave in flota_jugador:
@@ -568,6 +573,8 @@ def reponer_flota(datos_flota):
     (reconstruyendo sets de tuplas para los puntos y tuplas como claves de impactos).
     Parametros: datos_flota (diccionario obtenido de JSON).
     Retorna: diccionario de flota en memoria listo para jugar.
+    Lanza: KeyError, TypeError, ValueError o AttributeError si los datos estan mal
+    formados.
     """
     flota_repuesta = crear_flota()
     for id_nave, datos_nave in datos_flota.items():
@@ -608,6 +615,7 @@ def reponer_flota_en_cubo(cubo, flota_jugador):
     conservan.
     Parametros: cubo (3D), flota_jugador.
     Retorna: cubo actualizado.
+    Lanza: PuntoInvalidoError si la flota tiene puntos fuera del cubo.
     """
     for id_nave, nave in flota_jugador.items():
         requeridos = celdas_requeridas_por_impacto(nave["tipo"])
