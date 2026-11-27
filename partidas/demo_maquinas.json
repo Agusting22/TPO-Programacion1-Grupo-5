@@ -1,0 +1,5752 @@
+{
+  "n": 8,
+  "jugador_1": "Maquina",
+  "jugador_2": "Maquina 2",
+  "turno_actual": "Maquina",
+  "ganador": null,
+  "es_vs_maquina": true,
+  "es_maquina_vs_maquina": true,
+  "dificultad": "facil",
+  "dificultades": {
+    "Maquina": "dificil",
+    "Maquina 2": "facil"
+  },
+  "cubos": {
+    "Maquina": [
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          0,
+          2
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          3
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          3,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          5,
+          0,
+          2,
+          0,
+          2,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          2,
+          0,
+          0,
+          2,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          0,
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          5,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          2,
+          5,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          3,
+          1,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          5,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          2
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          2,
+          0,
+          1,
+          1,
+          1,
+          5,
+          1
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    ],
+    "Maquina 2": [
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          4,
+          4,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          4,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          2
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          4,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          5,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          5,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          4,
+          4,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          4,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          4,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          4,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    ]
+  },
+  "flotas": {
+    "Maquina": {
+      "F1": {
+        "tipo": "F",
+        "puntos": [
+          [
+            3,
+            7,
+            4
+          ],
+          [
+            4,
+            7,
+            4
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "F2": {
+        "tipo": "F",
+        "puntos": [
+          [
+            5,
+            5,
+            6
+          ],
+          [
+            5,
+            5,
+            7
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "F3": {
+        "tipo": "F",
+        "puntos": [
+          [
+            1,
+            3,
+            6
+          ],
+          [
+            1,
+            4,
+            6
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "D1": {
+        "tipo": "D",
+        "puntos": [
+          [
+            1,
+            4,
+            2
+          ],
+          [
+            2,
+            4,
+            2
+          ],
+          [
+            3,
+            4,
+            2
+          ]
+        ],
+        "impactos": {
+          "2,4,2": 1
+        },
+        "hundida": false
+      },
+      "D2": {
+        "tipo": "D",
+        "puntos": [
+          [
+            3,
+            2,
+            7
+          ],
+          [
+            4,
+            2,
+            7
+          ],
+          [
+            5,
+            2,
+            7
+          ]
+        ],
+        "impactos": {
+          "4,2,7": 1
+        },
+        "hundida": false
+      },
+      "S1": {
+        "tipo": "S",
+        "puntos": [
+          [
+            3,
+            6,
+            2
+          ],
+          [
+            3,
+            7,
+            2
+          ],
+          [
+            3,
+            8,
+            2
+          ]
+        ],
+        "impactos": {
+          "3,7,2": 1
+        },
+        "hundida": false
+      },
+      "S2": {
+        "tipo": "S",
+        "puntos": [
+          [
+            2,
+            7,
+            8
+          ],
+          [
+            3,
+            7,
+            8
+          ],
+          [
+            4,
+            7,
+            8
+          ]
+        ],
+        "impactos": {
+          "2,7,8": 1,
+          "4,7,8": 1
+        },
+        "hundida": false
+      },
+      "C1": {
+        "tipo": "C",
+        "puntos": [
+          [
+            4,
+            8,
+            6
+          ],
+          [
+            5,
+            8,
+            6
+          ],
+          [
+            6,
+            8,
+            6
+          ],
+          [
+            7,
+            8,
+            6
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "P1": {
+        "tipo": "P",
+        "puntos": [
+          [
+            8,
+            6,
+            4
+          ],
+          [
+            8,
+            6,
+            5
+          ],
+          [
+            8,
+            6,
+            6
+          ],
+          [
+            8,
+            6,
+            7
+          ],
+          [
+            8,
+            6,
+            8
+          ]
+        ],
+        "impactos": {
+          "8,6,6": 1
+        },
+        "hundida": false
+      },
+      "E1": {
+        "tipo": "E",
+        "puntos": [
+          [
+            5,
+            4,
+            3
+          ],
+          [
+            5,
+            4,
+            4
+          ],
+          [
+            5,
+            5,
+            3
+          ],
+          [
+            5,
+            5,
+            4
+          ],
+          [
+            6,
+            4,
+            3
+          ],
+          [
+            6,
+            4,
+            4
+          ],
+          [
+            6,
+            5,
+            3
+          ],
+          [
+            6,
+            5,
+            4
+          ]
+        ],
+        "impactos": {
+          "6,4,3": 1
+        },
+        "hundida": false
+      }
+    },
+    "Maquina 2": {
+      "F1": {
+        "tipo": "F",
+        "puntos": [
+          [
+            7,
+            2,
+            6
+          ],
+          [
+            8,
+            2,
+            6
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "F2": {
+        "tipo": "F",
+        "puntos": [
+          [
+            4,
+            2,
+            8
+          ],
+          [
+            4,
+            3,
+            8
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "F3": {
+        "tipo": "F",
+        "puntos": [
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "D1": {
+        "tipo": "D",
+        "puntos": [
+          [
+            6,
+            4,
+            5
+          ],
+          [
+            6,
+            4,
+            6
+          ],
+          [
+            6,
+            4,
+            7
+          ]
+        ],
+        "impactos": {
+          "6,4,7": 1,
+          "6,4,6": 1,
+          "6,4,5": 1
+        },
+        "hundida": true
+      },
+      "D2": {
+        "tipo": "D",
+        "puntos": [
+          [
+            2,
+            5,
+            6
+          ],
+          [
+            2,
+            5,
+            7
+          ],
+          [
+            2,
+            5,
+            8
+          ]
+        ],
+        "impactos": {
+          "2,5,6": 1,
+          "2,5,7": 1,
+          "2,5,8": 1
+        },
+        "hundida": true
+      },
+      "S1": {
+        "tipo": "S",
+        "puntos": [
+          [
+            2,
+            6,
+            4
+          ],
+          [
+            3,
+            6,
+            4
+          ],
+          [
+            4,
+            6,
+            4
+          ]
+        ],
+        "impactos": {
+          "3,6,4": 1,
+          "2,6,4": 1,
+          "4,6,4": 1
+        },
+        "hundida": true
+      },
+      "S2": {
+        "tipo": "S",
+        "puntos": [
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            2,
+            7,
+            1
+          ],
+          [
+            3,
+            7,
+            1
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "C1": {
+        "tipo": "C",
+        "puntos": [
+          [
+            3,
+            8,
+            3
+          ],
+          [
+            3,
+            8,
+            4
+          ],
+          [
+            3,
+            8,
+            5
+          ],
+          [
+            3,
+            8,
+            6
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "P1": {
+        "tipo": "P",
+        "puntos": [
+          [
+            8,
+            4,
+            2
+          ],
+          [
+            8,
+            4,
+            3
+          ],
+          [
+            8,
+            4,
+            4
+          ],
+          [
+            8,
+            4,
+            5
+          ],
+          [
+            8,
+            4,
+            6
+          ]
+        ],
+        "impactos": {},
+        "hundida": false
+      },
+      "E1": {
+        "tipo": "E",
+        "puntos": [
+          [
+            6,
+            6,
+            3
+          ],
+          [
+            6,
+            6,
+            4
+          ],
+          [
+            6,
+            7,
+            3
+          ],
+          [
+            6,
+            7,
+            4
+          ],
+          [
+            7,
+            6,
+            3
+          ],
+          [
+            7,
+            6,
+            4
+          ],
+          [
+            7,
+            7,
+            3
+          ],
+          [
+            7,
+            7,
+            4
+          ]
+        ],
+        "impactos": {
+          "6,7,4": 1,
+          "7,7,4": 1,
+          "7,7,3": 1,
+          "7,6,4": 1,
+          "6,6,4": 1,
+          "7,6,3": 1,
+          "6,6,3": 1,
+          "6,7,3": 1
+        },
+        "hundida": true
+      }
+    }
+  },
+  "municiones": {
+    "Maquina": {
+      "T": null,
+      "R": 4,
+      "C": 2,
+      "S": 4,
+      "L": 2,
+      "O": 1,
+      "G": 0
+    },
+    "Maquina 2": {
+      "T": null,
+      "R": 3,
+      "C": 2,
+      "S": 4,
+      "L": 2,
+      "O": 1,
+      "G": 1
+    }
+  },
+  "estadisticas": {
+    "Maquina": {
+      "disparos": 75,
+      "aciertos": 17,
+      "fallos": 58,
+      "naves_hundidas": 4
+    },
+    "Maquina 2": {
+      "disparos": 75,
+      "aciertos": 7,
+      "fallos": 68,
+      "naves_hundidas": 0
+    }
+  },
+  "historial": [
+    {
+      "numero": 1,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          5,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              5,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 2,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          3,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              3,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 3,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          4,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              4,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 4,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          1,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              1,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 5,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          5,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              5,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 6,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          2,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              2,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 7,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          4,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              4,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 8,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          4,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              4,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 9,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          3,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              3,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 10,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          3,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              3,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 11,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          6,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              6,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 12,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          7,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              7,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 13,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          6,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              6,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 14,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          7,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              7,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 15,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          5,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              5,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 16,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          2,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              2,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 17,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          6,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              6,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 18,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          4,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              4,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 19,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          3,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              3,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 20,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          2,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              2,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 21,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          3,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              3,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 22,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          4,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              4,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 23,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          5,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              5,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 24,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          5,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              5,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 25,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          4,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              4,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 26,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              6,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 27,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          4,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              4,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 28,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          4,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                4,
+                3
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 29,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          3,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              3,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 30,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          1,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              1,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 31,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                3,
+                6,
+                4
+              ],
+              "S1",
+              "S"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 32,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          8,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              8,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 33,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "G",
+        "punto": [
+          8,
+          3,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                2,
+                6,
+                4
+              ],
+              "S1",
+              "S"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 34,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          7,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              7,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 35,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                4,
+                6,
+                4
+              ],
+              "S1",
+              "S"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": [
+            "S1"
+          ]
+        }
+      }
+    },
+    {
+      "numero": 36,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          7,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                2,
+                7,
+                8
+              ],
+              "S2",
+              "S"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 37,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          7,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              7,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 38,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          8,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              8,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 39,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          3,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              3,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 40,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          2,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              2,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 41,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          2,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              2,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 42,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          6,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              6,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 43,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          3,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              3,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 44,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          6,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              6,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 45,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          7,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                7,
+                4
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 46,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          2,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 47,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          7,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              7,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 48,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          8,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              8,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 49,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          7,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                7,
+                7,
+                4
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 50,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          3,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              3,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 51,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          7,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                7,
+                7,
+                3
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 52,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          4,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              4,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 53,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                7,
+                6,
+                4
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 54,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          7,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              7,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 55,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          7,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              7,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 56,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          1,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              1,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 57,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          8,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              8,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 58,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          4,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              4,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 59,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          7,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              7,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 60,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          8,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              8,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 61,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              6,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 62,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          4,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              4,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 63,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                6,
+                4
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 64,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          8,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              8,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 65,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          6,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              6,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 66,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          6,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              6,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 67,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          5,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              5,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 68,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          6,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              6,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 69,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          6,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                7,
+                6,
+                3
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 70,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          1,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              1,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 71,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          6,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                6,
+                3
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 72,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          6,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              6,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 73,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          5,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              5,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 74,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          2,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              2,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 75,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              6,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 76,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          3,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              3,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 77,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          8,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              8,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 78,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          1,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              1,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 79,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          7,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                7,
+                3
+              ],
+              "E1",
+              "E"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": [
+            "E1"
+          ]
+        }
+      }
+    },
+    {
+      "numero": 80,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          6,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              6,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 81,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          3,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              3,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 82,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          5,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              5,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 83,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          4,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                4,
+                7
+              ],
+              "D1",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 84,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          1,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              1,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 85,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          4,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                4,
+                6
+              ],
+              "D1",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 86,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          6,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              6,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 87,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          4,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              4,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 88,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          2,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              2,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 89,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          4,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                6,
+                4,
+                5
+              ],
+              "D1",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": [
+            "D1"
+          ]
+        }
+      }
+    },
+    {
+      "numero": 90,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          5,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              5,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 91,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          3,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              3,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 92,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          1,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              1,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 93,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          4,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              4,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 94,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          2,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              2,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 95,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          2,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              2,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 96,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          4,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              4,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 97,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          5,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                2,
+                5,
+                6
+              ],
+              "D2",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 98,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          1,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              1,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 99,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          5,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              5,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 100,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          4,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              4,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 101,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          5,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              5,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 102,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          1,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              1,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 103,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          5,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              5,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 104,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          4,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              4,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 105,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          6,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              6,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 106,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          7,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                3,
+                7,
+                2
+              ],
+              "S1",
+              "S"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 107,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          4,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              4,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 108,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          7,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              7,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 109,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          5,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                2,
+                5,
+                7
+              ],
+              "D2",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 110,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          2,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              2,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 111,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          5,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              5,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 112,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          2,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              2,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 113,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          5,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                2,
+                5,
+                8
+              ],
+              "D2",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": [
+            "D2"
+          ]
+        }
+      }
+    },
+    {
+      "numero": 114,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          7,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              7,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 115,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          5,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              5,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 116,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          2,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                4,
+                2,
+                7
+              ],
+              "D2",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 117,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          2,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              2,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 118,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          4,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              4,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 119,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          4,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              4,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 120,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          8,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              8,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 121,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          6,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              6,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 122,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          3,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              3,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 123,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          7,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              7,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 124,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          7,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              7,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 125,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          2,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              2,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 126,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          7,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                4,
+                7,
+                8
+              ],
+              "S2",
+              "S"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 127,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          5,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              8,
+              5,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 128,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          3,
+          3,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              3,
+              3,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 129,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          4,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              4,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 130,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          7,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              7,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 131,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          4,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              4,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 132,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          6,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              6,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 133,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          4,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              4,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 134,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          4,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                2,
+                4,
+                2
+              ],
+              "D1",
+              "D"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 135,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          1,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              1,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 136,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          3,
+          1
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              3,
+              1
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 137,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          4,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              4,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 138,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          8,
+          6,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [
+            [
+              [
+                8,
+                6,
+                6
+              ],
+              "P1",
+              "P"
+            ]
+          ],
+          "celdas_agua": [],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 139,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          8,
+          5
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              8,
+              5
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 140,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          6,
+          1,
+          8
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              6,
+              1,
+              8
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 141,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          5,
+          1,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              5,
+              1,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 142,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          7,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              7,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 143,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          8,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              8,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 144,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          1,
+          8,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              1,
+              8,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 145,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          2,
+          3
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              2,
+              3
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 146,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          6,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              6,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 147,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          2,
+          4
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              2,
+              4
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 148,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          4,
+          1,
+          6
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              4,
+              1,
+              6
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 149,
+      "jugador": "Maquina",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          7,
+          5,
+          7
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              7,
+              5,
+              7
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    },
+    {
+      "numero": 150,
+      "jugador": "Maquina 2",
+      "detalle": {
+        "arma": "T",
+        "punto": [
+          2,
+          6,
+          2
+        ],
+        "eje": null,
+        "valor": null,
+        "resultado": {
+          "celdas_impactadas": [],
+          "celdas_agua": [
+            [
+              2,
+              6,
+              2
+            ]
+          ],
+          "naves_hundidas": []
+        }
+      }
+    }
+  ]
+}
