@@ -98,3 +98,64 @@ def test_mapa_probabilidad_agua_marcada_vale_cero():
     tablero.escribir_celda(cubo, (1, 1, 1), tablero.AGUA_MARCADA)
     mapa = radar.mapa_probabilidad(cubo, [2])
     assert tablero.leer_celda(mapa, (1, 1, 1)) == 0
+
+
+def test_recorrido_octantes_recursivo_visita_todas_las_celdas():
+    puntos = radar.recorrido_octantes(4)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+    puntos_8 = radar.recorrido_octantes(8)
+    assert len(puntos_8) == 512
+    assert len(set(puntos_8)) == 512
+
+
+def test_recorrido_espiral_recursivo_visita_todas_las_celdas():
+    cubo = tablero.crear_cubo(4)
+    puntos = radar.recorrido_espiral(cubo)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+    assert puntos[0] == (1, 1, 1)
+
+
+def test_recorrido_propagacion_recursivo_visita_todas_las_celdas():
+    puntos = radar.recorrido_propagacion(4)
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+
+
+def test_recorrido_propagacion_con_origen_personalizado():
+    origen = (1, 1, 1)
+    puntos = radar.recorrido_propagacion(4, origen)
+    assert puntos[0] == origen
+    assert len(puntos) == 64
+    assert len(set(puntos)) == 64
+
+
+def test_recorrido_propagacion_origen_invalido_lanza_excepcion():
+    with pytest.raises(tablero.PuntoInvalidoError):
+        radar.recorrido_propagacion(4, (9, 9, 9))
+
+
+def test_despacho_recorridos_por_diccionario():
+    for nombre in [radar.NOMBRE_RECORRIDO_CAPAS,
+                   radar.NOMBRE_RECORRIDO_OCTANTES,
+                   radar.NOMBRE_RECORRIDO_ESPIRAL,
+                   radar.NOMBRE_RECORRIDO_PROPAGACION,
+                   radar.NOMBRE_RECORRIDO_CAPAS_X,
+                   radar.NOMBRE_RECORRIDO_CAPAS_Y]:
+        puntos = radar.obtener_recorrido(nombre, 4)
+        assert len(puntos) == 64
+        assert len(set(puntos)) == 64
+
+
+def test_obtener_recorrido_invalido_lanza_excepcion():
+    with pytest.raises(radar.RecorridoInvalidoError):
+        radar.obtener_recorrido("recorrido_inexistente", 4)
+
+
+def test_listar_nombres_recorridos():
+    nombres = radar.listar_nombres_recorridos()
+    assert radar.NOMBRE_RECORRIDO_CAPAS in nombres
+    assert radar.NOMBRE_RECORRIDO_OCTANTES in nombres
+    assert radar.NOMBRE_RECORRIDO_ESPIRAL in nombres
+    assert radar.NOMBRE_RECORRIDO_PROPAGACION in nombres

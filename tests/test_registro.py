@@ -250,3 +250,39 @@ def test_exportar_reporte_escribe_resumen_e_historial(tmp_path, monkeypatch):
     assert "--- Estadisticas ---" in texto
     assert "1. Jugador 1: Torpedo apuntado a 8,8,7. Impactos: F1 en 8,8,7." in texto
     assert "2. Jugador 2: Sonar (eje z) valor 8." in texto
+
+
+def test_guardar_partida_devuelve_la_ruta_escrita(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    ruta = registro.guardar_partida(_armar_estado_simple(), "con_ruta")
+    assert ruta.endswith("con_ruta.json")
+    assert (tmp_path / ruta).exists()
+
+
+def test_texto_no_codificable_no_destruye_archivos_existentes(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    estado = _armar_estado_simple()
+    partida.ejecutar_turno(estado, {"arma": "T", "punto": (8, 8, 7), "eje": None, "valor": None})
+    guardada = tmp_path / registro.guardar_partida(estado, "previa")
+    reporte = tmp_path / registro.exportar_reporte(estado, "previa")
+    registro.guardar_ranking("Jugador 1", "previa", 1, False)
+    ranking = tmp_path / registro.ARCHIVO_RANKING
+    antes = [guardada.read_bytes(), reporte.read_bytes(), ranking.read_bytes()]
+    estado["historial"][0]["jugador"] = "\ud800"
+    with pytest.raises(ValueError):
+        registro.guardar_partida(estado, "previa")
+    with pytest.raises(ValueError):
+        registro.exportar_reporte(estado, "previa")
+    with pytest.raises(ValueError):
+        registro.guardar_ranking("\ud800", "previa", 1, False)
+    assert [guardada.read_bytes(), reporte.read_bytes(), ranking.read_bytes()] == antes
+
+
+def test_cargar_nombre_de_jugador_no_codificable_lanza_error():
+    datos = _datos_validos()
+    datos["jugador_1"] = "\ud800"
+    for clave in ("cubos", "flotas", "municiones", "estadisticas"):
+        datos[clave]["\ud800"] = datos[clave]["Jugador 1"]
+    datos["turno_actual"] = "\ud800"
+    with pytest.raises(ValueError):
+        registro.deserializar_estado(datos)

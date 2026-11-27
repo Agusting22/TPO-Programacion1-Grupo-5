@@ -131,13 +131,17 @@ def test_nueva_partida_maquina_vs_maquina_tiene_bandera():
     assert estado["es_vs_maquina"] is True
 
 
-def test_menu_turno_acepta_guardar_opcion_4():
-    assert partida.validar_opcion("4", partida.PATRON_OPCION_TURNO)
+def test_menu_turno_acepta_guardar_opcion_3():
+    assert partida.validar_opcion("3", partida.PATRON_OPCION_TURNO)
 
 
 def test_menu_turno_opcion_5_es_salir():
     assert partida.OPCION_TURNO_SALIR == "5"
-    assert partida.OPCION_TURNO_GUARDAR == "4"
+    assert partida.OPCION_TURNO_GUARDAR == "3"
+    assert partida.OPCION_TURNO_RADAR == "4"
+    assert "3 - Guardar y salir" in partida.TEXTO_MENU_TURNO
+    assert partida.ACCIONES_TURNO["3"] == partida.accion_guardar_partida
+    assert partida.ACCIONES_TURNO["4"] == partida.accion_radar
 
 
 def test_accion_guardar_partida_guarda_archivo(tmp_path, monkeypatch, capsys):
@@ -288,7 +292,7 @@ def test_maquina_vs_maquina_guarda_sale_y_se_retoma(tmp_path, monkeypatch):
 def test_maquina_vs_maquina_sin_confirmar_no_juega(monkeypatch, capsys):
     simular_entradas(monkeypatch, ["1", "1", "n"])
     partida.iniciar_partida_maquina_vs_maquina()
-    assert "(automatico)" not in capsys.readouterr().out
+    assert "Dispara a" not in capsys.readouterr().out
 
 
 @pytest.mark.parametrize("error", [KeyboardInterrupt, EOFError])
@@ -351,6 +355,8 @@ def test_fin_de_partida_con_ranking_danado_avisa(tmp_path, monkeypatch, capsys):
     ("4", [], "Recorrido por octantes"),
     ("5", [], "Recorrido en espiral"),
     ("6", [""], "Recorrido por propagacion"),
+    ("7", [], "Recorrido por capas de x"),
+    ("8", [], "Recorrido por capas de y"),
 ])
 def test_ver_cubo_resuelve_cada_opcion(monkeypatch, capsys, opcion, entradas, titulo):
     simular_entradas(monkeypatch, [opcion] + entradas)
@@ -386,5 +392,98 @@ def test_torpedo_guiado_informa_la_celda_alcanzada(capsys):
     partida.ejecutar_turno_maquina(estado)
     assert estado["ultima_jugada"]["arma"] == "G"
     salida = capsys.readouterr().out
-    assert "Objetivo: 1,1,2" in salida
-    assert "Torpedo guiado sobre la celda 1,1,2." in salida
+    assert "--- Turno de la maquina ---" in salida
+    assert "Dispara a 1,1,2. Impacto. Fragata hundida (2 de 2)." in salida
+    mensaje = partida.formatear_mensaje_jugada(estado["flotas"]["Jugador 1"], estado["ultima_jugada"])
+    assert mensaje.startswith("Torpedo guiado sobre la celda 1,1,2.")
+
+
+@pytest.mark.parametrize("letra, desde, hasta, esperado", [
+    ("F", (1, 1, 1), (1, 1, 2), "Impacto. Fragata averiada (1 de 2)."),
+    ("D", (1, 1, 1), (1, 1, 3), "Impacto. Destructor averiado (1 de 3)."),
+    ("S", (1, 1, 1), (1, 1, 3), "Impacto. Submarino averiado (1 de 3)."),
+    ("C", (3, 1, 1), (3, 1, 4), "Impacto. Crucero averiado (1 de 4)."),
+    ("P", (6, 1, 1), (6, 1, 5), "Impacto. Portaaviones averiado (0 de 5)."),
+    ("E", (2, 2, 2), (3, 3, 3), "Impacto. Estacion orbital averiada (1 de 8)."),
+])
+def test_mensaje_de_impacto_concuerda_con_la_nave(letra, desde, hasta, esperado):
+    cubo = tablero.crear_cubo(8)
+    flota_rival = flota.crear_flota()
+    flota.ubicar_nave(cubo, flota_rival, letra, desde, hasta)
+    resultado = armamento.aplicar_disparo(cubo, flota_rival, "T", desde, None, armamento.CATALOGO_ARMAS)
+    assert partida.formatear_mensaje_resultado(flota_rival, resultado) == esperado
+
+
+def test_mensaje_del_sonar_indica_plano_y_contactos(monkeypatch, capsys):
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    simular_entradas(monkeypatch, ["S", "z", "8"])
+    partida.realizar_disparo(estado, "Jugador 1")
+    assert "Sonar sobre el plano z = 8. 2 contactos detectados." in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("jugada, error", [
+    ({"arma": "Z", "punto": (4, 4, 4), "eje": None, "valor": None}, armamento.ArmaInvalidaError),
+    ({"arma": "L", "punto": (4, 4, 4), "eje": "z", "valor": None}, armamento.ArmaInvalidaError),
+    ({"arma": "R", "punto": (9, 9, 9), "eje": None, "valor": None}, tablero.PuntoInvalidoError),
+    ({"arma": "S", "punto": None, "eje": "z", "valor": 9}, tablero.PuntoInvalidoError),
+])
+def test_jugada_invalida_no_descuenta_municion_ni_avanza(jugada, error):
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    municion = dict(estado["municiones"]["Jugador 1"])
+    with pytest.raises(error):
+        partida.ejecutar_turno(estado, jugada)
+    assert estado["municiones"]["Jugador 1"] == municion
+    assert estado["turno_actual"] == "Jugador 1"
+    assert estado["historial"] == []
+
+
+@pytest.mark.parametrize("nombre", ["CON", "nul", "Aux", "prn", "com1", "LPT9"])
+def test_nombre_reservado_se_vuelve_a_pedir(monkeypatch, capsys, nombre):
+    simular_entradas(monkeypatch, [nombre, "consola"])
+    assert partida.pedir_nombre_partida() == "consola"
+    assert "Nombre invalido" in capsys.readouterr().out
+
+
+def test_entrada_no_decodificable_sale_con_mensaje(monkeypatch, capsys):
+    def fallar(_):
+        raise UnicodeDecodeError("utf-8", b"\xff", 0, 1, "byte invalido")
+
+    monkeypatch.setattr("builtins.input", fallar)
+    partida.ejecutar_menu_principal()
+    assert partida.MENSAJE_ENTRADA_FINALIZADA in capsys.readouterr().out
+
+
+def test_guardar_nombre_no_codificable_avisa_y_sigue(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    estado["historial"] = [{"numero": 1, "jugador": "\ud800", "detalle": {"arma": "T"}}]
+    simular_entradas(monkeypatch, ["rota"])
+    assert partida.accion_guardar_partida(estado, "Jugador 1") is True
+    assert "Error al guardar" in capsys.readouterr().out
+    assert not (tmp_path / "partidas" / "rota.json").exists()
+
+
+@pytest.mark.parametrize("n", [3, 5, 6, 16])
+def test_tamano_invalido_avisa_y_vuelve_al_menu(monkeypatch, capsys, n):
+    monkeypatch.setattr("tablero.TAMANO_CUBO", n)
+    simular_entradas(monkeypatch, ["1", "2", "3", "5"])
+    partida.ejecutar_menu_principal()
+    assert capsys.readouterr().out.count("Tamano de cubo invalido") == 3
+
+
+@pytest.mark.parametrize("n", [7, 12])
+def test_partida_completa_con_otro_tamano(tmp_path, monkeypatch, capsys, n):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("tablero.TAMANO_CUBO", n)
+    # Maquina contra maquina en facil, avanzando de a 50 turnos hasta el final
+    pausas = partida.calcular_limite_turnos(n) // partida.TURNOS_ENTRE_PAUSAS + 1
+    respuestas = iter(["1", "1", "s"] + ["1"] * pausas)
+
+    def responder(mensaje):
+        if mensaje.startswith("Exportar"):
+            return "n"
+        return next(respuestas)
+
+    monkeypatch.setattr("builtins.input", responder)
+    partida.iniciar_partida_maquina_vs_maquina()
+    assert "Gano " in capsys.readouterr().out

@@ -104,61 +104,41 @@ def test_recorrido_capas_z_visita_todas_las_celdas():
     assert puntos[-1] == (4, 4, 4)
 
 
-def test_recorrido_octantes_recursivo_visita_todas_las_celdas():
-    puntos = tablero.recorrido_octantes(4)
+def test_recorrido_capas_x_visita_todas_las_celdas_en_orden():
+    puntos = tablero.recorrido_capas_x(tablero.crear_cubo(4))
     assert len(puntos) == 64
     assert len(set(puntos)) == 64
-    puntos_8 = tablero.recorrido_octantes(8)
-    assert len(puntos_8) == 512
-    assert len(set(puntos_8)) == 512
+    for i in range(1, len(puntos)):
+        assert puntos[i - 1][1] <= puntos[i][1]
+    assert puntos[1] == (1, 1, 2)
+    assert puntos[4] == (2, 1, 1)
 
 
-def test_recorrido_espiral_recursivo_visita_todas_las_celdas():
-    cubo = tablero.crear_cubo(4)
-    puntos = tablero.recorrido_espiral(cubo)
+def test_recorrido_capas_y_visita_todas_las_celdas_en_orden():
+    puntos = tablero.recorrido_capas_y(4)
     assert len(puntos) == 64
     assert len(set(puntos)) == 64
-    assert puntos[0] == (1, 1, 1)
+    for i in range(1, len(puntos)):
+        assert puntos[i - 1][2] <= puntos[i][2]
+    assert puntos[1] == (1, 2, 1)
+    assert puntos[4] == (2, 1, 1)
 
 
-def test_recorrido_propagacion_recursivo_visita_todas_las_celdas():
-    puntos = tablero.recorrido_propagacion(4)
-    assert len(puntos) == 64
-    assert len(set(puntos)) == 64
+def test_validar_tamano_acepta_los_valores_admitidos():
+    assert tablero.TAMANO_CUBO_POR_DEFECTO == 8
+    for n in range(tablero.TAMANO_CUBO_MINIMO, tablero.TAMANO_CUBO_MAXIMO + 1):
+        assert tablero.validar_tamano(n) == n
 
 
-def test_recorrido_propagacion_con_origen_personalizado():
-    origen = (1, 1, 1)
-    puntos = tablero.recorrido_propagacion(4, origen)
-    assert puntos[0] == origen
-    assert len(puntos) == 64
-    assert len(set(puntos)) == 64
+@pytest.mark.parametrize("n", [0, 3, 6, 16, "8"])
+def test_validar_tamano_invalido_lanza_excepcion(n):
+    with pytest.raises(tablero.TamanoInvalidoError):
+        tablero.validar_tamano(n)
 
 
-def test_recorrido_propagacion_origen_invalido_lanza_excepcion():
-    with pytest.raises(tablero.PuntoInvalidoError):
-        tablero.recorrido_propagacion(4, (9, 9, 9))
-
-
-def test_despacho_recorridos_por_diccionario():
-    for nombre in [tablero.NOMBRE_RECORRIDO_CAPAS,
-                   tablero.NOMBRE_RECORRIDO_OCTANTES,
-                   tablero.NOMBRE_RECORRIDO_ESPIRAL,
-                   tablero.NOMBRE_RECORRIDO_PROPAGACION]:
-        puntos = tablero.obtener_recorrido(nombre, 4)
-        assert len(puntos) == 64
-        assert len(set(puntos)) == 64
-
-
-def test_obtener_recorrido_invalido_lanza_excepcion():
-    with pytest.raises(tablero.RecorridoInvalidoError):
-        tablero.obtener_recorrido("recorrido_inexistente", 4)
-
-
-def test_listar_nombres_recorridos():
-    nombres = tablero.listar_nombres_recorridos()
-    assert tablero.NOMBRE_RECORRIDO_CAPAS in nombres
-    assert tablero.NOMBRE_RECORRIDO_OCTANTES in nombres
-    assert tablero.NOMBRE_RECORRIDO_ESPIRAL in nombres
-    assert tablero.NOMBRE_RECORRIDO_PROPAGACION in nombres
+def test_dibujar_capa_con_tamano_de_dos_cifras():
+    cubo = tablero.crear_cubo(12)
+    lineas = tablero.dibujar_capa(cubo, 12, {}).split("\n")
+    assert "x12" in lineas[1]
+    assert lineas[13].startswith("y12")
 
