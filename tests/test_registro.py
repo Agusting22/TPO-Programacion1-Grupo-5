@@ -205,12 +205,28 @@ def test_deserializar_estructura_mala_lanza_error_controlado(clave, valor):
         registro.deserializar_estado(datos)
 
 
+def test_cargar_partida_recupera_historial_identico(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    estado = _armar_estado_simple()
+    partida.ejecutar_turno(estado, {"arma": "R", "punto": (8, 8, 6), "eje": None, "valor": None})
+    registro.guardar_partida(estado, "con_agua")
+    recuperado = registro.cargar_partida("con_agua")
+    assert recuperado["historial"] == estado["historial"]
+
+
+def test_cargar_partida_acepta_flota_vacia():
+    datos = _datos_validos()
+    datos["flotas"]["Jugador 1"] = {}
+    assert registro.deserializar_estado(datos)["flotas"]["Jugador 1"] == {}
+
+
 def test_deserializar_lista_raiz_lanza_error_controlado():
     with pytest.raises(registro.DatosInvalidosError):
         registro.deserializar_estado([1, 2])
 
 
-@pytest.mark.parametrize("contenido", [b"{}", b'"x"', b"[1]", b"no es json", b"\xff\xfe\x00"])
+@pytest.mark.parametrize("contenido", [b"{}", b'"x"', b"[1]", b"no es json", b"\xff\xfe\x00",
+                                       pytest.param(b"[" * 200000, id="anidado")])
 def test_ranking_danado_no_se_sobrescribe(tmp_path, monkeypatch, contenido):
     monkeypatch.chdir(tmp_path)
     ruta = tmp_path / registro.ARCHIVO_RANKING

@@ -255,7 +255,9 @@ def simular_entradas(monkeypatch, entradas):
 
 
 def test_limite_de_turnos_entre_maquinas():
-    assert partida.MAX_TURNOS_MAQUINA_VS_MAQUINA == 1100
+    assert partida.calcular_limite_turnos(8) == 1100
+    for n in (8, 10, 12):
+        assert partida.calcular_limite_turnos(n) > 2 * (n ** 3 + 5)
 
 
 def test_guardar_con_error_no_sale_de_la_partida(monkeypatch, capsys):

@@ -50,7 +50,8 @@ OPCION_PAUSA_SALIR = "4"
 
 SEMILLA_MAXIMA = 1000000
 MAX_INTENTOS_MAQUINA = 500
-MAX_TURNOS_MAQUINA_VS_MAQUINA = 1100
+IMPACTOS_EXTRA_POR_FLOTA = 5
+MARGEN_TURNOS_MAQUINA_VS_MAQUINA = 66
 TURNOS_ENTRE_PAUSAS = 50
 NOMBRE_JUGADOR_1 = "Jugador 1"
 NOMBRE_JUGADOR_2 = "Jugador 2"
@@ -551,7 +552,7 @@ def obtener_largos_naves_restantes(flota_defensor):
     """
     Objetivo: obtener el largo de cada nave en linea que sigue a flote.
     Parametros: flota_defensor (dict).
-    Retorna: list de largos (int).
+    Retorna: list de largos (int), o [2] si no quedan naves en linea a flote.
     """
     largos = []
     for id_nave, nave in flota_defensor.items():
@@ -1209,6 +1210,16 @@ def pedir_pausa_maquinas(estado):
     return turnos
 
 
+def calcular_limite_turnos(n):
+    """
+    Objetivo: calcular el maximo de turnos de una partida entre maquinas, segun las
+    celdas del cubo y los segundos impactos al portaaviones de cada flota.
+    Parametros: n (int) tamano del cubo.
+    Retorna: int cantidad maxima de turnos.
+    """
+    return 2 * (n ** 3 + IMPACTOS_EXTRA_POR_FLOTA) + MARGEN_TURNOS_MAQUINA_VS_MAQUINA
+
+
 def alcanzo_limite_turnos(estado):
     """
     Objetivo: verificar si una partida automatica llego al maximo de turnos.
@@ -1216,7 +1227,7 @@ def alcanzo_limite_turnos(estado):
     Retorna: bool True si es maquina contra maquina y alcanzo el limite.
     """
     es_mvm = estado.get("es_maquina_vs_maquina", False)
-    return es_mvm and contar_turnos_jugados(estado) >= MAX_TURNOS_MAQUINA_VS_MAQUINA
+    return es_mvm and contar_turnos_jugados(estado) >= calcular_limite_turnos(estado["n"])
 
 
 def es_turno_automatico(estado):

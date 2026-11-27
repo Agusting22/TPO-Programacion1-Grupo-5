@@ -164,6 +164,10 @@ def _deserializar_jugada(jugada_datos):
                 (tuple(celda), id_nave, tipo)
                 for celda, id_nave, tipo in resultado_copia["celdas_impactadas"]
             ]
+        if "celdas_agua" in resultado_copia:
+            resultado_copia["celdas_agua"] = [
+                tuple(p) for p in resultado_copia["celdas_agua"]
+            ]
         if "reveladas" in resultado_copia:
             resultado_copia["reveladas"] = [
                 tuple(p) for p in resultado_copia["reveladas"]
@@ -230,7 +234,6 @@ def _validar_datos_jugador(datos, nombre, n):
     """
     _validar_cubo(datos["cubos"][nombre], n)
     flota.validar_datos_flota(datos["flotas"][nombre])
-    _exigir(len(datos["flotas"][nombre]) > 0, "Flota vacia")
     for letra in armamento.CATALOGO_ARMAS:
         cantidad = datos["municiones"][nombre][letra]
         ilimitada = armamento.CATALOGO_ARMAS[letra]["municion_inicial"] is None
@@ -314,7 +317,8 @@ def deserializar_estado(datos):
     Objetivo: reconstruir el estado de partida desde un dict leido de JSON.
     Parametros: datos (dict).
     Retorna: estado de partida listo para usar.
-    Lanza: ErrorCubo, KeyError, TypeError o ValueError si los datos estan mal formados.
+    Lanza: ErrorCubo, KeyError, TypeError, ValueError o AttributeError si los datos
+    estan mal formados.
     """
     _validar_datos_partida(datos)
     estado = {}
@@ -391,7 +395,8 @@ def cargar_partida(nombre):
     Parametros: nombre (str sin extension).
     Retorna: estado reconstruido (dict).
     Lanza: FileNotFoundError si el archivo no existe, ValueError si el JSON es invalido,
-    ErrorCubo, KeyError o TypeError si la estructura es incorrecta.
+    ErrorCubo, KeyError, TypeError o AttributeError si la estructura es incorrecta,
+    RecursionError si el JSON esta anidado en exceso.
     """
     ruta = _ruta_partida(nombre)
     with open(ruta, "r", encoding="utf-8") as archivo:
@@ -467,7 +472,7 @@ def listar_ranking():
     try:
         with open(ARCHIVO_RANKING, "r", encoding="utf-8") as archivo:
             ranking = json.load(archivo)
-    except (ValueError, OSError) as error:
+    except (ValueError, OSError, RecursionError) as error:
         raise RankingInvalidoError("No se pudo leer el ranking: " + str(error))
     if not isinstance(ranking, list):
         raise RankingInvalidoError("El ranking no es una lista")
