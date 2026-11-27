@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 import flota
@@ -54,7 +52,7 @@ def test_formatear_resumen_incluye_a_cada_jugador():
 # Tests Entrega 3: persistencia
 # ---------------------------------------------------------------------------
 
-def _armar_estado_simple():
+def _configuracion_simple():
     n = 8
     cubo1 = tablero.crear_cubo(n)
     flota1 = flota.crear_flota()
@@ -67,7 +65,11 @@ def _armar_estado_simple():
         "nombre_jugador_1": "Jugador 1", "cubo_jugador_1": cubo1, "flota_jugador_1": flota1,
         "nombre_jugador_2": "Jugador 2", "cubo_jugador_2": cubo2, "flota_jugador_2": flota2,
     }
-    return partida.nueva_partida_1v1(configuracion)
+    return configuracion
+
+
+def _armar_estado_simple():
+    return partida.nueva_partida_1v1(_configuracion_simple())
 
 
 def test_guardar_y_cargar_partida_roundtrip(tmp_path, monkeypatch):
@@ -150,3 +152,85 @@ def test_formatear_ranking_con_entradas():
     texto = registro.formatear_ranking(entradas)
     assert "J1" in texto
     assert "5 turnos" in texto
+
+
+def test_cargar_partida_conserva_celdas_detectadas(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    estado = _armar_estado_simple()
+    partida.ejecutar_turno(estado, {"arma": "S", "punto": None, "eje": "z", "valor": 8})
+    registro.guardar_partida(estado, "con_sonar")
+    recuperado = registro.cargar_partida("con_sonar")
+    assert tablero.leer_celda(recuperado["cubos"]["Jugador 2"], (8, 8, 7)) == tablero.DETECTADO
+
+
+def test_cargar_partida_maquina_vs_maquina_se_retoma(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    estado = partida.nueva_partida_maquina_vs_maquina(_configuracion_simple(), ("facil", "dificil"))
+    partida.turno_maquina(estado)
+    registro.guardar_partida(estado, "maquinas")
+    recuperado = registro.cargar_partida("maquinas")
+    assert recuperado["es_maquina_vs_maquina"] is True
+    assert recuperado["dificultades"] == estado["dificultades"]
+    assert recuperado["turno_actual"] == estado["turno_actual"]
+    partida.turno_maquina(recuperado)
+    assert len(recuperado["historial"]) == 2
+
+
+def _escribir(ruta, texto):
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        archivo.write(texto)
+
+
+def _datos_validos():
+    return registro.serializar_estado(_armar_estado_simple())
+
+
+@pytest.mark.parametrize("clave, valor", [
+    ("n", "8"),
+    ("n", 9),
+    ("flotas", []),
+    ("flotas", {"Jugador 1": [], "Jugador 2": []}),
+    ("cubos", {"Jugador 1": [[[0]]], "Jugador 2": [[[0]]]}),
+    ("municiones", 5),
+    ("municiones", {"Jugador 1": {"T": None, "R": None}, "Jugador 2": {}}),
+    ("estadisticas", {}),
+    ("historial", 3),
+    ("historial", [{"numero": 1, "jugador": "Jugador 1", "detalle": {"punto": 5}}]),
+    ("turno_actual", "Otro"),
+])
+def test_deserializar_estructura_mala_lanza_error_controlado(clave, valor):
+    datos = _datos_validos()
+    datos[clave] = valor
+    with pytest.raises((ValueError, KeyError, TypeError, AttributeError, IndexError, tablero.ErrorCubo)):
+        registro.deserializar_estado(datos)
+
+
+def test_deserializar_lista_raiz_lanza_error_controlado():
+    with pytest.raises(registro.DatosInvalidosError):
+        registro.deserializar_estado([1, 2])
+
+
+@pytest.mark.parametrize("contenido", [b"{}", b'"x"', b"[1]", b"no es json", b"\xff\xfe\x00"])
+def test_ranking_danado_no_se_sobrescribe(tmp_path, monkeypatch, contenido):
+    monkeypatch.chdir(tmp_path)
+    ruta = tmp_path / registro.ARCHIVO_RANKING
+    ruta.write_bytes(contenido)
+    with pytest.raises(registro.RankingInvalidoError):
+        registro.listar_ranking()
+    with pytest.raises(registro.RankingInvalidoError):
+        registro.guardar_ranking("Jugador 1", "prueba", 10, False)
+    assert ruta.read_bytes() == contenido
+
+
+def test_exportar_reporte_escribe_resumen_e_historial(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    estado = _armar_estado_simple()
+    partida.ejecutar_turno(estado, {"arma": "T", "punto": (8, 8, 7), "eje": None, "valor": None})
+    partida.ejecutar_turno(estado, {"arma": "S", "punto": None, "eje": "z", "valor": 8})
+    ruta = registro.exportar_reporte(estado, "informe")
+    with open(ruta, "r", encoding="utf-8") as archivo:
+        texto = archivo.read()
+    assert ruta.endswith("informe.txt")
+    assert "--- Estadisticas ---" in texto
+    assert "1. Jugador 1: Torpedo apuntado a 8,8,7. Impactos: F1 en 8,8,7." in texto
+    assert "2. Jugador 2: Sonar (eje z) valor 8." in texto

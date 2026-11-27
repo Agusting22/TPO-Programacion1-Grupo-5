@@ -36,7 +36,8 @@ def test_buscar_naves_optimizada_hace_menos_comparaciones_que_la_lineal():
 def test_obtener_celdas_plano_fijando_z():
     celdas = radar.obtener_celdas_plano("z", 3, 8)
     assert len(celdas) == 64
-    assert all(celda[0] == 3 for celda in celdas)
+    for celda in celdas:
+        assert celda[0] == 3
 
 
 def test_obtener_celdas_plano_eje_invalido():

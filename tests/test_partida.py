@@ -146,7 +146,7 @@ def test_accion_guardar_partida_guarda_archivo(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr("builtins.input", lambda _: "mi_partida")
     estado = partida.nueva_partida_1v1(armar_configuracion())
     resultado = partida.accion_guardar_partida(estado, "Jugador 1")
-    assert resultado is True
+    assert resultado is False
     recuperado = registro.cargar_partida("mi_partida")
     assert recuperado["jugador_1"] == "Jugador 1"
 
@@ -245,3 +245,144 @@ def test_vistas_recorridos_alternativos_cubo():
     assert partida.OPCION_VISTA_PROPAGACION in partida.ACCIONES_VISTA_CUBO
 
 
+# ---------------------------------------------------------------------------
+# Tests de regresion
+# ---------------------------------------------------------------------------
+
+def simular_entradas(monkeypatch, entradas):
+    respuestas = iter(entradas)
+    monkeypatch.setattr("builtins.input", lambda _: next(respuestas))
+
+
+def test_limite_de_turnos_entre_maquinas():
+    assert partida.MAX_TURNOS_MAQUINA_VS_MAQUINA == 1100
+
+
+def test_guardar_con_error_no_sale_de_la_partida(monkeypatch, capsys):
+    def fallar(estado, nombre):
+        raise OSError("disco lleno")
+
+    monkeypatch.setattr("registro.guardar_partida", fallar)
+    simular_entradas(monkeypatch, ["mi_partida"])
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    assert partida.accion_guardar_partida(estado, "Jugador 1") is True
+    assert "Error al guardar" in capsys.readouterr().out
+
+
+def test_maquina_vs_maquina_guarda_sale_y_se_retoma(tmp_path, monkeypatch):
+    import registro
+    monkeypatch.chdir(tmp_path)
+    estado = partida.nueva_partida_maquina_vs_maquina(armar_configuracion())
+    # Avanza dos turnos de a uno y despues guarda y sale
+    simular_entradas(monkeypatch, ["2", "2", "3", "demo"])
+    partida.ejecutar_bucle_turnos(estado)
+    assert len(estado["historial"]) == 2
+    recuperado = registro.cargar_partida("demo")
+    simular_entradas(monkeypatch, ["2", "4"])
+    partida.ejecutar_bucle_turnos(recuperado)
+    assert len(recuperado["historial"]) == 3
+
+
+def test_maquina_vs_maquina_sin_confirmar_no_juega(monkeypatch, capsys):
+    simular_entradas(monkeypatch, ["1", "1", "n"])
+    partida.iniciar_partida_maquina_vs_maquina()
+    assert "(automatico)" not in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("error", [KeyboardInterrupt, EOFError])
+def test_menu_principal_sale_con_mensaje_si_se_interrumpe(monkeypatch, capsys, error):
+    def interrumpir(_):
+        raise error
+
+    monkeypatch.setattr("builtins.input", interrumpir)
+    partida.ejecutar_menu_principal()
+    assert "Saliendo del juego" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("contenido", [
+    "[1, 2]",
+    '{"n": "8"}',
+    "5",
+    "no es json",
+])
+def test_cargar_partida_danada_vuelve_al_menu(tmp_path, monkeypatch, capsys, contenido):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "partidas").mkdir()
+    (tmp_path / "partidas" / "mala.json").write_text(contenido, encoding="utf-8")
+    simular_entradas(monkeypatch, ["mala"])
+    partida.continuar_partida_guardada()
+    assert "Error al cargar la partida" in capsys.readouterr().out
+
+
+def test_fin_de_partida_muestra_ranking_y_exporta(tmp_path, monkeypatch, capsys):
+    import registro
+    monkeypatch.chdir(tmp_path)
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    registro.guardar_partida(estado, "final")
+    partida.ejecutar_turno(estado, {"arma": "T", "punto": (8, 8, 7), "eje": None, "valor": None})
+    estado["turno_actual"] = "Jugador 1"
+    registro.guardar_partida(estado, "final")
+    # Carga la partida, hunde la ultima celda y exporta el reporte
+    simular_entradas(monkeypatch, ["final", "1", "T", "8,8,8", "s"])
+    partida.continuar_partida_guardada()
+    salida = capsys.readouterr().out
+    assert "=== Ranking de partidas ===" in salida
+    assert registro.listar_ranking()[0]["partida"] == "final"
+    assert (tmp_path / "exportaciones" / "final.txt").exists()
+
+
+def test_fin_de_partida_con_ranking_danado_avisa(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "ranking.json").write_text("{}", encoding="utf-8")
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    estado["ganador"] = "Jugador 1"
+    simular_entradas(monkeypatch, ["n"])
+    partida.ejecutar_bucle_turnos(estado)
+    assert partida.MENSAJE_RANKING_DANADO in capsys.readouterr().out
+    assert (tmp_path / "ranking.json").read_text(encoding="utf-8") == "{}"
+
+
+@pytest.mark.parametrize("opcion, entradas, titulo", [
+    ("1", [], "CAPA z = 1"),
+    ("2", ["3"], "CORTE x = 3"),
+    ("3", ["4"], "CORTE y = 4"),
+    ("4", [], "Recorrido por octantes"),
+    ("5", [], "Recorrido en espiral"),
+    ("6", [""], "Recorrido por propagacion"),
+])
+def test_ver_cubo_resuelve_cada_opcion(monkeypatch, capsys, opcion, entradas, titulo):
+    simular_entradas(monkeypatch, [opcion] + entradas)
+    estado = partida.nueva_partida_1v1(armar_configuracion())
+    partida.mostrar_cubo_propio_y_rival(estado, "Jugador 1")
+    assert titulo in capsys.readouterr().out
+
+
+def test_ubicacion_manual_reinicia_si_una_nave_queda_sin_lugar(monkeypatch, capsys):
+    cubo = tablero.crear_cubo(8)
+    flota_jugador = flota.crear_flota()
+    flota.ubicar_nave(cubo, flota_jugador, "F", (1, 1, 1), (1, 1, 2))
+    # La primera consulta informa que no hay lugar; despues se corta la entrada
+    consultas = iter(["E", None])
+    monkeypatch.setattr("partida.obtener_nave_sin_lugar", lambda cubo_actual, pendientes: next(consultas))
+
+    def interrumpir(_):
+        raise EOFError
+
+    monkeypatch.setattr("builtins.input", interrumpir)
+    with pytest.raises(EOFError):
+        partida.ubicar_flota_manual(cubo, flota_jugador)
+    assert "Se reinicia la flota" in capsys.readouterr().out
+    assert flota_jugador == {}
+    assert cubo == tablero.crear_cubo(8)
+
+
+def test_torpedo_guiado_informa_la_celda_alcanzada(capsys):
+    estado = partida.nueva_partida_vs_maquina(armar_configuracion(), "dificil")
+    estado["turno_actual"] = "Jugador 2"
+    partida.ejecutar_turno(estado, {"arma": "T", "punto": (1, 1, 1), "eje": None, "valor": None})
+    estado["turno_actual"] = "Jugador 2"
+    partida.ejecutar_turno_maquina(estado)
+    assert estado["ultima_jugada"]["arma"] == "G"
+    salida = capsys.readouterr().out
+    assert "Objetivo: 1,1,2" in salida
+    assert "Torpedo guiado sobre la celda 1,1,2." in salida

@@ -20,13 +20,15 @@ def test_celdas_racimo_incluye_vecinos():
 def test_celdas_carga_profundidad_recorre_todo_el_eje_z():
     celdas = armamento.obtener_celdas_carga_profundidad((1, 5, 6), 8, None)
     assert len(celdas) == 8
-    assert all(celda[1] == 5 and celda[2] == 6 for celda in celdas)
+    for celda in celdas:
+        assert celda[1] == 5 and celda[2] == 6
 
 
 def test_celdas_laser_eje_x():
     celdas = armamento.obtener_celdas_laser((3, 1, 1), 8, "x")
     assert len(celdas) == 8
-    assert all(celda[0] == 3 and celda[2] == 1 for celda in celdas)
+    for celda in celdas:
+        assert celda[0] == 3 and celda[2] == 1
 
 
 def test_celdas_laser_eje_invalido():
@@ -132,7 +134,8 @@ def test_onda_expansiva_recursiva_propaga_radio():
 
 def test_onda_expansiva_en_esquina_respeta_limites():
     celdas = armamento.obtener_celdas_onda_expansiva((1, 1, 1), 8, None, radio=2)
-    assert all(tablero.es_punto_valido(c, 8) for c in celdas)
+    for c in celdas:
+        assert tablero.es_punto_valido(c, 8)
 
 
 def test_torpedo_guiado_sin_impactos_previos_usa_punto():

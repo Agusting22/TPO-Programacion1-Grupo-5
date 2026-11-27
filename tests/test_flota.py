@@ -162,3 +162,23 @@ def test_validar_datos_flota():
 
     with pytest.raises(flota.UbicacionInvalidaError):
         flota.validar_datos_flota({"F1": {"tipo": "F", "puntos": [[1, 1, 1]], "impactos": {}}})
+
+
+def test_reponer_flota_en_cubo_conserva_celdas_detectadas():
+    cubo = tablero.crear_cubo(8)
+    flota_jugador = flota.crear_flota()
+    cubo, flota_jugador = flota.ubicar_nave(cubo, flota_jugador, "F", (2, 2, 2), (2, 2, 3))
+    tablero.escribir_celda(cubo, (2, 2, 2), tablero.DETECTADO)
+    flota.reponer_flota_en_cubo(cubo, flota_jugador)
+    assert tablero.leer_celda(cubo, (2, 2, 2)) == tablero.DETECTADO
+    assert tablero.leer_celda(cubo, (2, 2, 3)) == tablero.NAVE_OCULTA
+
+
+def test_hay_posicion_valida_en_cubo_vacio_y_lleno():
+    cubo = tablero.crear_cubo(8)
+    for letra in flota.CATALOGO_NAVES:
+        assert flota.hay_posicion_valida(cubo, letra, flota.CATALOGO_NAVES)
+    for punto in tablero.recorrido_capas_z(cubo):
+        tablero.escribir_celda(cubo, punto, tablero.NAVE_OCULTA)
+    for letra in flota.CATALOGO_NAVES:
+        assert not flota.hay_posicion_valida(cubo, letra, flota.CATALOGO_NAVES)
