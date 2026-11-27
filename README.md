@@ -1,20 +1,18 @@
 # Operacion Cubo - Batalla Naval 3D
 
-TPO de Programacion I (UADE). **Estado: ENTREGA 3 (Completo).**
+TPO de Programacion I (UADE). **Entrega final.**
 
-En esta entrega el juego se encuentra 100% completo, integrado y probado:
-- Modos de juego completos: **1 vs 1**, **1 vs la maquina** (con dos niveles de dificultad: Facil y Estratega) y **Maquina vs Maquina**.
-- Guardado y reanudacion persistente de partidas en formato JSON (`registro.py`, `flota.py`).
-- Sistema de ranking historico persistente con calculo de puntuacion (`ranking.json`).
-- Busquedas de radar con comparador de metricas: lineal, optimizada y recursiva por capas (`radar.py`).
-- Recorridos alternativos del cubo en 3D: capas Z, cortes axiales X e Y, octantes recursivo, espiral recursivo y propagacion esferica recursiva (`tablero.py`).
-- Arsenal completo con 7 armas: Torpedo (T), Misil de racimo (R), Carga de profundidad (C), Sonar (S), Barrido laser (L), Onda expansiva (O, recursiva) y Torpedo guiado (G, recursivo) (`armamento.py`).
-- Despacho 100% por diccionarios para armas, recorridos y opciones de menu (sin cadenas `if/elif`).
-- Manejo robusto de excepciones propias heredadas de `ErrorCubo` mediante bloques `try/except/else/finally`.
+Batalla naval por consola dentro de un cubo de 8 x 8 x 8. Incluye:
+
+- Tres modos: uno contra uno, uno contra la maquina y maquina contra maquina.
+- Dos niveles para la maquina: Facil y Dificil.
+- Siete armas, entre ellas dos con algoritmos recursivos.
+- Tres busquedas de radar con metricas y seis vistas del cubo.
+- Guardado y carga de partidas en JSON, ranking de partidas terminadas y exportacion de reportes.
 
 ---
 
-## Instalacion y Requisitos
+## Instalacion
 
 Requiere Python 3.10 o superior.
 
@@ -22,19 +20,23 @@ Requiere Python 3.10 o superior.
 pip install -r requirements.txt
 ```
 
-> **Nota:** `requirements.txt` solo incluye `pytest` para la ejecucion de la suite de pruebas automatizadas. Todo el codigo del juego funciona exclusivamente sobre la biblioteca estandar de Python (`json`, `os`, `random`, `re`, `time`).
+`requirements.txt` solo incluye `pytest`, que se usa para las pruebas. El juego usa unicamente la biblioteca estandar de Python.
 
 ---
 
-## Ejecucion y Pruebas
+## Ejecucion
 
-Para iniciar el juego:
+Desde la **raiz del repositorio** (la carpeta donde esta `main.py`):
 
 ```bash
 python main.py
 ```
 
-Para correr las pruebas unitarias automatizadas (112 tests):
+Las rutas de `partidas/`, `exportaciones/` y `ranking.json` son relativas a la carpeta desde la que se ejecuta el programa. Si se ejecuta desde otra carpeta, no se van a encontrar las partidas guardadas.
+
+## Pruebas
+
+Tambien desde la raiz del repositorio (154 pruebas):
 
 ```bash
 python -m pytest -v
@@ -42,197 +44,256 @@ python -m pytest -v
 
 ---
 
-## Menus del Juego
+## Menus
 
-### 1. Menu Principal
+Las opciones se validan: ante un dato no valido se muestra `Dato invalido. Intente de nuevo.` y se vuelve a pedir. Con `Ctrl+C` o fin de la entrada, el programa sale con un mensaje (lo no guardado se pierde).
+
+### Menu principal
 
 ```
 ===== OPERACION CUBO =====
 1 - Partida uno contra uno
 2 - Partida uno contra la maquina
 3 - Partida maquina contra maquina
-4 - Continuar partida guardada
+4 - Continuar una partida guardada
 5 - Salir
-Opcion:
 ```
 
-- **1 - Partida uno contra uno**: dos jugadores humanos ubican sus flotas y alternan turnos.
-- **2 - Partida uno contra la maquina**: partida de un jugador humano contra la inteligencia artificial, pudiendo elegir su dificultad:
-  ```
-  Nivel de dificultad de la maquina:
-  1 - Facil (disparos aleatorios)
-  2 - Estratega (mapa de probabilidad y modo caza)
-  ```
-- **3 - Partida maquina contra maquina**: simulacion automatica entre dos IA. Permite configurar la dificultad de cada maquina (ej. Estratega vs Facil) y una pausa configurable entre turnos para seguir el desarrollo de la contienda.
-- **4 - Continuar partida guardada**: escanea la carpeta `partidas/` y lista las partidas guardadas con fecha y jugadores, permitiendo retomar cualquier partida exactamente en el turno y estado en que fue guardada.
-- **5 - Salir**: finaliza la aplicacion.
-
-Todas las entradas de menu se validan; si se ingresa una opcion no valida (`abc`, `9`, etc.), el sistema informa el error y vuelve a solicitarla sin cortar el programa.
-
----
-
-### 2. Ubicacion de Flotas
-
-Antes de iniciar la batalla, los jugadores humanos configuran la disposicion de sus naves:
+### Ubicacion de flotas
 
 ```
---- Flota de Jugador 1 ---
 1 - Ubicacion manual
 2 - Ubicacion automatica
-Opcion: 1
-
-Pendientes:  F x3  D x2  S x2  C x1  P x1  E x1
-
-Nave (F/D/S/C/P/E): F
-Desde-hasta: 3,5,4-3,5,5
-Ubicada.
 ```
 
-- **Manual**: las coordenadas se ingresan en formato `z,x,y-z,x,y` (para naves lineales) o indicando dos esquinas opuestas para la estacion orbital 2x2x2 (ej. `3,3,3-4,4,4`). El sistema valida que no salgan del cubo, que cumplan las restricciones de cota Z de cada nave y que mantengan una celda de separacion en las 26 direcciones con cualquier otra nave.
-- **Automatica**: ubica de forma aleatoria y valida las 10 naves de la flota garantizando todas las restricciones de adyacencia. La flota de la maquina siempre se ubica automaticamente.
+- **Manual**: se pide la nave (`Nave (F/D/S/C/P/E):`) y sus extremos (`Desde-hasta:`) con el formato `z,x,y-z,x,y`, por ejemplo `3,5,4-3,5,5`. Las naves son rectas sobre un solo eje. Para la estacion orbital se indican dos esquinas opuestas del bloque, por ejemplo `3,3,3-4,4,4`. Si alguna nave pendiente se queda sin ninguna posicion valida, la flota se reinicia.
+- **Automatica**: ubica al azar las 10 naves respetando las reglas.
 
----
+La flota de la maquina siempre se ubica de forma automatica. Antes de empezar se pide confirmacion: `Ambas flotas ubicadas. Iniciar partida (s/n):`.
 
-### 3. Menu de Turno
+### Dificultad de la maquina
+
+```
+Dificultad de la maquina:
+1 - Facil (disparos aleatorios)
+2 - Dificil (estratega: caza naves averiadas y mapa de probabilidad)
+```
+
+### Menu de turno
 
 ```
 --- Turno de Jugador 1 ---
 1 - Disparar
 2 - Ver el cubo
 3 - Reporte de radar (metricas)
-4 - Guardar partida
+4 - Guardar y salir
 5 - Salir de la partida
-Opcion: 1
 ```
 
-- **1 - Disparar**: permite elegir el arma deseada (si queda municion) y solicita el objetivo correspondiente segun el tipo de armamento.
-- **2 - Ver el cubo**: abre el submenu de vistas y recorridos del cubo:
-  - `1 - Ver todas las capas de z` (planos XY secuenciales).
-  - `2 - Corte fijando x` (plano lateral).
-  - `3 - Corte fijando y` (plano frontal).
-  - `4 - Octantes (recursivo)` (particion tridimensional en 8 cuadrantes espaciales).
-  - `5 - Espiral (recursivo)` (recorrido por anillos concentricos borde-centro).
-  - `6 - Propagacion desde centro (recursivo)` (ondas esfericas desde el centro del cubo).
-- **3 - Reporte de radar (metricas)**: ejecuta en paralelo las busquedas lineal, optimizada y recursiva sobre la flota propia, informando celdas activas encontradas, cantidad de comparaciones, tiempo de ejecucion en milisegundos y profundidad maxima de recursion.
-- **4 - Guardar partida**: serializa el estado completo en un archivo JSON en la carpeta `partidas/` para continuar mas adelante.
-- **5 - Salir de la partida**: interrumpe la partida en curso y regresa al menu principal.
+- **1 - Disparar**: pide el arma (`Arma (T/R/C/S/L/O/G):`) y el objetivo. Si la jugada es valida, el turno pasa al rival. Si no (sin municion, celda ya disparada o dato invalido), el turno no cambia.
+- **2 - Ver el cubo**: abre el submenu de vistas. No consume el turno.
+- **3 - Reporte de radar (metricas)**: compara las tres busquedas sobre la flota propia. No consume el turno.
+- **4 - Guardar y salir**: guarda la partida y vuelve al menu principal.
+- **5 - Salir de la partida**: vuelve al menu principal **sin guardar**.
 
----
-
-## Inteligencia Artificial y Niveles de Dificultad
-
-El juego cuenta con dos niveles de inteligencia artificial para la maquina, implementados en `partida.py` y apoyados en los algoritmos de `radar.py` y `armamento.py`:
-
-### Nivel 1: Facil
-- **Comportamiento**: la maquina dispara sobre celdas validas que no hayan sido disparadas previamente, seleccionadas al azar.
-- **Armas**: selecciona aleatoriamente entre las armas que cuenten con municion disponible, priorizando el Torpedo convencional.
-- **Uso ideal**: partidas introductorias y jugadores principiantes.
-
-### Nivel 2: Estratega (Dificil)
-Implementa un modelo tactico dividido en dos fases:
-
-1. **Fase de Caza (Modo Persecucion / Targeting)**:
-   - Se activa cuando hay al menos una nave enemiga **averiada pero no hundida** (impacto positivo previo).
-   - **Uso de Torpedo Guiado (`G`)**: si la maquina dispone de esta arma, la utiliza inmediatamente, aprovechando el algoritmo de busqueda contigua recursiva (`armamento._buscar_contiguo_recursivo`) para impactar las secciones intactas de la nave averiada.
-   - **Rastreo ortogonal**: si no cuenta con Torpedo Guiado, evalua las celdas vecinas ortogonales directas a los impactos previos que aun no hayan recibido disparos.
-
-2. **Fase de Busqueda (Mapa de Probabilidad 3D / Heatmap)**:
-   - Se activa cuando no hay naves averiadas pendientes de destruccion.
-   - Utiliza la funcion `radar.mapa_probabilidad(dimension, celdas_libres, naves_restantes)` para calcular una matriz 3D con la densidad de probabilidad de presencia de las naves vivas del rival.
-   - Dispara sobre la celda con la mayor probabilidad acumulada.
-   - **Seleccion estrategica de armas**: si detecta zonas de alta densidad o celdas concentradas, prioriza armas de impacto zonal (Misil de racimo `R`, Carga de profundidad `C` u Onda expansiva `O`) para maximizar el dano esperado.
-
----
-
-## Persistencia y Sistema de Ranking
-
-El modulo `registro.py` se encarga de la persistencia de datos mediante formato JSON:
-
-### 1. Guardado y Carga de Partidas
-- Los archivos se guardan en el directorio `partidas/` (por ejemplo `partida_20261126_201500.json`).
-- Estructura persistida:
-  - `dimension_cubo`: tamano N del tablero.
-  - `jugadores` y `turno_actual`: nombre de los jugadores y a quien le corresponde el turno.
-  - `flotas`: serializacion completa de las 10 naves de cada jugador (clave, tipo, tramo de celdas, impactos por celda, estado sana/averiada/hundida).
-  - `impactos`: conjunto de celdas ya disparadas por cada jugador.
-  - `municiones`: inventario de cada arma para cada jugador.
-  - `historial`: lista cronologica de todos los eventos y disparos realizados.
-  - `estadisticas`: disparos totales, impactos acertados, fallos al agua y naves hundidas.
-  - `modo` y `dificultad`: modalidad de juego (`1v1`, `vs_maquina`, `maquina_vs_maquina`) y dificultad de la IA.
-
-### 2. Ranking Historico
-- Se almacena en `ranking.json`.
-- Al finalizar una partida, se calcula la puntuacion del ganador en base a:
-  $$\text{Puntaje} = (\text{Naves hundidas} \times 100) + (\text{Efectividad de disparo} \times 50) - (\text{Turnos empleados} \times 2)$$
-- Registra: nombre del ganador, puntuacion final, turnos empleados, naves destruidas, dificultad y fecha/hora.
-- Incluye formateo para visualizar la tabla de posiciones desde la consola.
-
----
-
-## Reglas del Juego
-
-Cubo de $N \times N \times N$ (por defecto $N = 8$). Las coordenadas $z, x, y$ van de $1$ a $N$.
-
-### Catalogo de la Flota
-
-| Nave | Letra | Celdas | Cantidad | Restriccion de Ubicacion | Comportamiento Especial |
-|------|:-----:|:------:|:--------:|--------------------------|--------------------------|
-| **Fragata** | F | 2 | 3 | Ninguna | Estandar |
-| **Destructor** | D | 3 | 2 | Ninguna | Al ser impactado, contraataca revelando una celda de la flota atacante |
-| **Submarino** | S | 3 | 2 | Solo mitad inferior de Z ($z \le N/2$) | Inmune al Barrido laser |
-| **Crucero** | C | 4 | 1 | No puede tocar extremos ($z \ne 1$ y $z \ne N$) | Estandar |
-| **Portaaviones** | P | 5 | 1 | Solo mitad superior de Z ($z > N/2$) | Cada celda requiere **2 impactos** para considerarse danada |
-| **Estacion orbital** | E | Bloque 2x2x2 | 1 | No toca ninguna cara exterior del cubo | Al ser destruida, otorga una municion extra de Misil de racimo |
-
-Entre cualquier par de naves debe existir como minimo **1 celda libre en las 26 direcciones** (adyacencias ortogonales y diagonales).
-
----
-
-### Catalogo del Arsenal
-
-| Arma | Letra | Municion | Patron de Dano / Efecto |
-|------|:-----:|:--------:|-------------------------|
-| **Torpedo** | T | Ilimitada | Impacta una celda puntual $(z, x, y)$. |
-| **Misil de racimo** | R | 3 | Impacta la celda apuntada y sus 6 celdas vecinas ortogonales. |
-| **Carga de profundidad** | C | 2 | Afecta toda la columna vertical del eje Z que pasa por $(x, y)$. |
-| **Sonar** | S | 4 | No causa dano; revela el contenido de un plano completo (fijando $Z$, $X$ o $Y$). |
-| **Barrido laser** | L | 2 | Barre una fila completa en el eje X o en el eje Y a eleccion (los Submarinos son inmunes). |
-| **Onda expansiva** | O | 1 | Se propaga recursivamente en volumen con radio decreciente desde el impacto. |
-| **Torpedo guiado** | G | 1 | Si hay un impacto previo sobre una nave no hundida, rastrea recursivamente una celda contigua sana de esa misma nave. |
-
----
-
-## Modulo de Radar y Comparacion de Algoritmos
-
-El modulo `radar.py` permite monitorear y comparar tres tecnicas algoritmicas de busqueda sobre la flota:
-
-- **Busqueda Lineal (`buscar_naves_lineal`)**: recorre de forma exhaustiva las $N^3$ celdas del espacio cubico mediante tres ciclos `for` anidados ($O(N^3)$ comparaciones).
-- **Busqueda Optimizada (`buscar_naves_optimizada`)**: aprovecha el indice de posiciones ocupadas por las naves vivas, realizando consultas directas ($O(K)$ con $K \ll N^3$).
-- **Busqueda Recursiva (`buscar_naves_recursiva`)**: divide el cubo por capas Z de manera recursiva (divide y conquista con wrapper `aux(z)`), acumulando las comparaciones y midiendo la profundidad maxima en la pila de llamadas (*call stack*).
-- **Reporte comparativo**: la opcion 3 del turno contrasta las tres busquedas mostrando comparaciones realizadas, tiempo en milisegundos y profundidad de recursion.
-
----
-
-## Estructura de Modulos y Arquitectura
+### Ver el cubo
 
 ```
-main.py           Punto de entrada: inicializa y gestiona el menu principal.
-partida.py        Integrador del juego: flujo de turnos, menus, IA (Facil y Estratega),
-                  simulacion maquina vs maquina, validacion regex y despacho por diccionarios.
-tablero.py        Representacion del cubo 3D, validaciones de coordenadas, algebra de matrices,
-                  vistas de corte y recorridos alternativos (capas, octantes, espiral, propagacion).
-flota.py          Catalogo de naves, reglas de colocacion manual y automatica, gestion de
-                  impactos, estados de salud y serializacion/restauracion de flotas.
-radar.py          Busquedas lineal, optimizada y recursiva, sonar y mapa de probabilidad 3D.
-armamento.py      Catalogo de armas, aplicacion de impactos, onda expansiva recursiva,
-                  torpedo guiado recursivo y administracion de municiones.
-registro.py       Persistencia JSON (guardado y carga), historial de turnos,
-                  calculo de estadisticas y ranking historico.
-tests/            Suite de 112 pruebas unitarias automatizadas con pytest.
-docs/bitacora.md  Registro de tareas y responsabilidades del equipo por cada entrega.
+--- Ver el cubo ---
+1 - Capas en el eje z
+2 - Corte fijando x
+3 - Corte fijando y
+4 - Recorrido por octantes
+5 - Recorrido en espiral
+6 - Recorrido por propagacion (desde el centro)
 ```
 
-### Principios de Diseno Aplicados:
-1. **Despacho por Diccionario**: ni en los menus, ni en la seleccion de armas, ni en los recorridos del cubo se utilizan cadenas `if/elif`. Se emplean diccionarios que asocian claves a funciones.
-2. **Aislamiento de Entrada/Salida**: las funciones `print()` e `input()` se encuentran estrictamente confinadas en `partida.py` y `main.py`. Los demas modulos son puramente funcionales (reciben datos y devuelven datos).
-3. **Jerarquia de Excepciones Propias**: todas las excepciones del juego heredan de `tablero.ErrorCubo` (derivada de `Exception`), y son capturadas con bloques `try/except/else/finally` en el ciclo de juego para evitar cortes abruptos.
+La vista elegida se muestra para el cubo propio y para el del rival (sin revelar sus naves ocultas).
+
+| Opcion | Que muestra |
+|--------|-------------|
+| 1 | Las 8 capas, con `y` en las filas y `x` en las columnas |
+| 2 | El plano de un `x` elegido, con `z` en las filas e `y` en las columnas |
+| 3 | El plano de un `y` elegido, con `z` en las filas y `x` en las columnas |
+| 4 | Lista de celdas en el orden de una subdivision recursiva en octantes |
+| 5 | Lista de celdas capa por capa, en espiral recursiva del borde al centro |
+| 6 | Lista de celdas por distancia ortogonal creciente (recursivo) desde un origen. El programa pide `Origen (z,x,y):`; con Enter usa el centro |
+
+Simbolos: `~` sin explorar, `o` agua, `X` impacto, `#` hundido, `?` detectado. En el cubo propio, las celdas de nave sin dano ni deteccion se muestran con la letra de la nave.
+
+---
+
+## Reglas
+
+Las coordenadas se escriben como `z,x,y`, con valores de 1 a 8. Hay dos jugadores y cada uno realiza una jugada por turno. Gana quien hunde toda la flota rival.
+
+### Flota (10 naves por jugador)
+
+| Nave | Letra | Celdas | Cantidad | Restriccion | Comportamiento especial |
+|------|:-----:|:------:|:--------:|-------------|-------------------------|
+| Fragata | F | 2 | 3 | Ninguna | - |
+| Destructor | D | 3 | 2 | Ninguna | Por cada celda suya impactada se marca como detectada una celda oculta de la flota atacante |
+| Submarino | S | 3 | 2 | Solo en la mitad inferior (z de 1 a 4) | Inmune al barrido laser |
+| Crucero | C | 4 | 1 | No ocupa z = 1 ni z = 8 | - |
+| Portaaviones | P | 5 | 1 | Solo en la mitad superior (z de 5 a 8) | Cada celda necesita 2 impactos para quedar danada |
+| Estacion orbital | E | 8 (bloque 2x2x2) | 1 | No toca ninguna cara exterior del cubo | Al hundirla, el atacante suma 1 misil de racimo |
+
+Entre dos naves tiene que quedar al menos una celda libre en las 26 direcciones (incluidas las diagonales).
+
+El primer impacto sobre una celda del Portaaviones informa la nave como averiada, pero esa celda todavia no se marca como impactada y se puede volver a disparar.
+
+### Armas
+
+| Arma | Letra | Municion inicial | Datos que pide | Efecto |
+|------|:-----:|:----------------:|----------------|--------|
+| Torpedo | T | Ilimitada | Objetivo | Una celda |
+| Misil de racimo | R | 3 | Objetivo | La celda y sus vecinas ortogonales (hasta 6) |
+| Carga de profundidad | C | 2 | Objetivo | Toda la recta en el eje z que pasa por ese (x, y) |
+| Sonar | S | 4 | Eje (z/x/y) y valor | No hace dano; marca como detectadas las naves ocultas de un plano completo. Consume el turno |
+| Barrido laser | L | 2 | Objetivo y eje (x/y) | Toda la recta sobre el eje elegido; no afecta a los submarinos |
+| Onda expansiva | O | 1 | Objetivo | Propagacion recursiva hasta 2 pasos ortogonales desde el objetivo |
+| Torpedo guiado | G | 1 | Objetivo | Si hay una nave rival impactada y no hundida, busca recursivamente una celda contigua de esa nave que falte danar. Si no hay, afecta la celda apuntada |
+
+En las armas que piden objetivo, la celda apuntada no puede ser una que ya figure como agua, impacto o hundida.
+
+---
+
+## Modos de juego y niveles de la maquina
+
+| Modo | Jugadores |
+|------|-----------|
+| Uno contra uno | `Jugador 1` y `Jugador 2`, ambos humanos, en la misma consola |
+| Uno contra la maquina | `Jugador 1` contra `Maquina` |
+| Maquina contra maquina | `Maquina` contra `Maquina 2`, cada una con su dificultad |
+
+### Nivel Facil
+
+Dispara siempre con torpedo a una celda al azar que todavia no haya sido disparada.
+
+### Nivel Dificil
+
+Usa solamente el torpedo y el torpedo guiado. En cada turno aplica, en orden:
+
+1. Si le queda el torpedo guiado y hay una nave rival averiada, lo usa.
+2. Si hay una nave averiada con una celda marcada como impacto, dispara un torpedo a una celda vecina ortogonal sin disparar.
+3. En otro caso, calcula el mapa de probabilidad y dispara un torpedo a la celda de mayor valor (si hay empate, elige al azar entre ellas).
+
+El mapa de probabilidad (`radar.mapa_probabilidad(cubo, largos)`) cuenta, para cada celda, en cuantas posiciones rectas de las naves lineales a flote podria estar incluida, descartando las rectas que pasan por agua marcada o celdas hundidas. Las naves ocultas se tratan como celdas sin explorar y la estacion orbital no se cuenta.
+
+### Maquina contra maquina
+
+La partida se muestra turno a turno. Aparece un menu de pausa antes del primer turno (tambien al retomar una partida guardada) y luego segun la opcion elegida:
+
+```
+--- Pausa (turnos jugados: N) ---
+1 - Continuar (proxima pausa en 50 turnos)
+2 - Avanzar un solo turno
+3 - Guardar y salir
+4 - Salir de la partida
+```
+
+Las pausas son fijas: cada 50 turnos con la opcion 1. Si se llega al limite de turnos, que depende del tamano N del cubo (2 x (N^3 + 5) + 66, es decir 1100 con N = 8), la partida termina sin ganador.
+
+---
+
+## Busquedas de radar
+
+La opcion 3 del menu de turno ejecuta, una despues de otra, tres busquedas de las celdas propias que tienen nave sin dano (ocultas o detectadas):
+
+| Busqueda | Funcion | Como trabaja |
+|----------|---------|--------------|
+| Lineal | `buscar_naves_lineal` | Tres ciclos anidados sobre las 512 celdas |
+| Optimizada | `buscar_naves_optimizada` | Consulta solo las celdas registradas en la flota (35 en una flota completa) |
+| Recursiva | `buscar_naves_recursiva` | Revisa una capa z y se llama a si misma con la siguiente (profundidad 8) |
+
+De cada una informa celdas encontradas, comparaciones, tiempo en milisegundos y profundidad maxima de recursion. Al final lista las celdas activas.
+
+---
+
+## Partidas guardadas
+
+### Como guardar
+
+- **Uno contra uno y contra la maquina**: en el menu de turno, opcion `4 - Guardar y salir`.
+- **Maquina contra maquina**: en el menu de pausa, opcion `3 - Guardar y salir`.
+
+En ambos casos se pide `Nombre de la partida:`. Si se guarda correctamente, se vuelve al menu principal. Si el archivo no se puede escribir, se informa el error y la partida sigue abierta.
+
+- **Nombres validos**: de 1 a 30 caracteres entre letras, numeros, guion (`-`) y guion bajo (`_`). Sin espacios ni extension.
+- **Sobrescritura**: guardar con un nombre que ya existe **reemplaza el archivo sin pedir confirmacion**.
+
+### Como retomar
+
+1. En el menu principal, elegir `4 - Continuar una partida guardada`.
+2. El programa lista los nombres disponibles en orden alfabetico.
+3. Escribir el nombre (sin `.json`). La partida continua con el turno, los cubos, las flotas y las municiones guardados.
+
+Si no hay archivos, se informa `No hay partidas guardadas.`. Si el nombre no existe, `No se encontro la partida`. Si el archivo esta danado o le faltan datos, se muestra `Error al cargar la partida:` seguido del detalle y se vuelve al menu principal; el archivo no se modifica.
+
+### Donde queda y que contiene
+
+Cada partida es un archivo `partidas/<nombre>.json`.
+
+| Clave | Contenido |
+|-------|-----------|
+| `n` | Tamano del cubo |
+| `jugador_1`, `jugador_2` | Nombres de los jugadores |
+| `turno_actual` | A quien le toca jugar |
+| `ganador` | Nombre del ganador o `null` |
+| `es_vs_maquina`, `es_maquina_vs_maquina` | Indican el modo |
+| `dificultad` | `"facil"`, `"dificil"` o `null` en uno contra uno |
+| `dificultades` | Dificultad de cada maquina en maquina contra maquina; `null` en los otros modos |
+| `cubos` | Por jugador, matriz `[z][x][y]`: 0 sin explorar, 1 nave oculta, 2 agua, 3 impacto, 4 hundido, 5 detectado |
+| `flotas` | Por jugador y nave: `tipo`, `puntos`, `impactos` (cantidad por celda `"z,x,y"`) y `hundida` |
+| `municiones` | Por jugador y letra de arma; `null` significa ilimitada |
+| `estadisticas` | Por jugador: `disparos`, `aciertos`, `fallos`, `naves_hundidas` |
+| `historial` | Lista de jugadas: `numero`, `jugador` y `detalle` (`arma`, `punto`, `eje`, `valor`, `resultado`) |
+
+### Partidas de demostracion incluidas
+
+Partidas a mitad de juego, sin ganador. Los turnos se cuentan sumando las jugadas de ambos jugadores.
+
+| Nombre | Modo | Estado al cargarla |
+|--------|------|--------------------|
+| `demo_1v1` | Uno contra uno | 34 turnos, juega Jugador 1. Cada jugador tiene 10 aciertos y hundio una fragata y un destructor. Ambos usaron 2 sonares y 1 misil de racimo |
+| `demo_facil` | Contra la maquina (Facil) | 34 turnos, juega Jugador 1. Jugador 1 tiene 10 aciertos, hundio una fragata y un destructor y uso 2 sonares y 1 misil de racimo. La maquina logro 1 acierto, sobre la estacion orbital |
+| `demo_dificil` | Contra la maquina (Dificil) | 34 turnos, juega Jugador 1. Jugador 1 tiene 10 aciertos y hundio una fragata y un destructor. La maquina hundio un submarino y ya uso su torpedo guiado |
+| `demo_maquinas` | Maquina (Dificil) contra Maquina 2 (Facil) | 150 turnos, juega Maquina. Maquina hundio 4 naves (dos destructores, un submarino y la estacion orbital) y tiene 17 aciertos; Maquina 2 tiene 7 y no hundio naves. Abre en el menu de pausa |
+
+Para conservar una demostracion en su estado original, al guardar despues de jugarla conviene usar otro nombre.
+
+---
+
+## Fin de la partida, ranking y exportaciones
+
+Cuando hay un ganador se muestran las estadisticas, se agrega la partida al ranking, se muestra el ranking y se pregunta `Exportar reporte de la partida (s/n):`.
+
+- **`ranking.json`**: lista de partidas ganadas, en el orden en que terminaron. Cada entrada tiene `ganador`, `partida` (`sin_nombre` si nunca se guardo ni se cargo), `turnos`, `es_vs_maquina` y `timestamp`. Las partidas entre maquinas figuran como `vs maquina`. Si el archivo esta danado, se avisa, no se modifica y ese resultado no se registra.
+- **`exportaciones/<nombre>.txt`**: reporte con fecha, modo, jugadores, ganador, turnos, estadisticas e historial. Usa el nombre de la partida o lo pide si no tiene. Reemplaza un reporte anterior con el mismo nombre.
+
+Una partida entre maquinas que llega al limite de turnos no entra al ranking, pero se puede exportar.
+
+`ranking.json` y `exportaciones/` se crean al usarlos y estan excluidos del control de versiones.
+
+---
+
+## Estructura del proyecto
+
+```
+main.py       Punto de entrada.
+partida.py    Menus, turnos, entrada y salida por consola y jugadas de la maquina.
+tablero.py    Cubo 3D, coordenadas, dibujo de capas y cortes, recorridos y operaciones de matrices.
+flota.py      Catalogo de naves, ubicacion, impactos y datos de la flota para guardar.
+radar.py      Busquedas, sonar y mapa de probabilidad.
+armamento.py  Catalogo de armas, municion y aplicacion de disparos.
+registro.py   Historial, estadisticas, guardado y carga, ranking y exportacion.
+partidas/     Partidas guardadas.
+tests/        Pruebas con pytest.
+docs/         Bitacora del equipo.
+```
+
+Criterios de diseno:
+
+- La seleccion de acciones de los menus, armas, vistas y niveles de la maquina se despacha con diccionarios.
+- `input()` y `print()` se usan solo en `partida.py`.
+- Las excepciones propias del juego heredan de `tablero.ErrorCubo`.

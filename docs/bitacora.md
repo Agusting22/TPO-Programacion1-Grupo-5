@@ -25,9 +25,8 @@ Integrador de esta entrega: Agustin Gonzalez
 | registro.py (Estadisticas) | Estadisticas de la partida y resumen final | Agustin Cangiani |
 | partida.py / main.py (Turnos y partida completa) | Estado de partida, turnos, partida 1v1 y contra la maquina, submenus de disparo y de vista del cubo | Agustin Gonzalez |
 
-Nota: la municion extra de la Estacion orbital se otorga sobre el Misil de
-racimo (no hay todavia un arma especifica para eso, ya que Onda expansiva es
-de la Entrega 3). Lo dejamos documentado por si despues hay que ajustarlo.
+Nota: la municion extra que otorga la Estacion orbital al ser hundida se suma
+al Misil de racimo.
 
 Integrador de esta entrega: Agustin Gonzalez
 
@@ -42,4 +41,26 @@ Integrador de esta entrega: Agustin Gonzalez
 | registro.py (Persistencia JSON y ranking) | Guardado y carga en JSON, listado de partidas y ranking | Francisco Pavlicich |
 | partida.py / main.py (Integrador E3) | Maquina vs maquina, continuar partida guardada, guardar y salir, maquina con dos niveles | Agustin Gonzalez |
 
+La entrega incluye ademas el mapa de probabilidad de radar.py, que utiliza la
+maquina en el nivel dificil.
+
 Integrador de esta entrega: Agustin Gonzalez
+
+## Entrega final
+
+Correcciones realizadas el 26/11/2026.
+
+Responsable: Kevin Maximiliano Palma Romero
+
+| Modulo | Correcciones |
+|--------|--------------|
+| partida.py | La opcion Guardar y salir cierra la partida solo si se pudo guardar. Menu de pausa en maquina vs maquina (cada 50 turnos, avance de a un turno, guardar o salir), confirmacion antes de iniciar y limite de 1100 turnos con estadisticas |
+| partida.py | Manejo de partidas guardadas danadas al cargarlas, salida con mensaje ante Ctrl+C o fin de la entrada y captura de errores del juego en el menu principal |
+| partida.py | Reinicio de la ubicacion manual cuando una nave queda sin lugar, informe de la celda alcanzada por el torpedo guiado y revision de las vistas del cubo (despacho por diccionario y propagacion desde el centro o un origen elegido) |
+| partida.py | Al terminar una partida se muestra el ranking, se avisa si esta danado y se ofrece exportar el reporte |
+| registro.py | Validacion de los datos de las partidas guardadas, proteccion del archivo de ranking danado, exportacion de reportes y eliminacion de una funcion sin uso |
+| flota.py | La carga conserva las celdas detectadas y recalcula las naves hundidas segun sus impactos. Verificacion de posiciones disponibles, eliminacion de alias sin uso y docstrings |
+| tablero.py | Ajuste del recorrido en espiral y de la validacion de tipos, y docstrings |
+| radar.py / armamento.py | Docstrings faltantes |
+| tests | Actualizacion de pruebas y nuevas pruebas de regresion |
+| .gitignore | Exclusion de ranking.json y exportaciones/ |
