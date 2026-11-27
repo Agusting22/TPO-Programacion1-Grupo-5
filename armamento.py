@@ -13,10 +13,12 @@ RADIO_ONDA_EXPANSIVA = 2
 
 
 class ArmaInvalidaError(tablero.ErrorCubo):
+    """Se lanza cuando el arma o su eje no sirven para el disparo."""
     pass
 
 
 class MunicionAgotadaError(tablero.ErrorCubo):
+    """Se lanza cuando no queda municion del arma elegida."""
     pass
 
 
@@ -230,6 +232,11 @@ def crear_municion_inicial(catalogo):
 
 
 def hay_municion(municion, letra):
+    """
+    Objetivo: verificar si queda municion de un arma.
+    Parametros: municion del jugador, letra del arma.
+    Retorna: True si el arma se puede usar (None es municion ilimitada).
+    """
     cantidad = municion[letra]
     if cantidad is None:
         return True

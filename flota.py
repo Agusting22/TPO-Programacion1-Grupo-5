@@ -199,6 +199,8 @@ def calcular_puntos_nave(letra, desde, hasta, catalogo):
     Parametros: letra (str) tipo de nave, desde (tuple) punto inicial (z, x, y),
                 hasta (tuple) punto final (z, x, y), catalogo (dict) definicion de naves.
     Retorna: list lista de tuplas (z, x, y) que conforman la nave.
+    Lanza: NaveInvalidaError si el tipo no existe, UbicacionInvalidaError si la forma
+    o el largo no corresponden a la nave.
     """
     if letra not in catalogo:
         raise NaveInvalidaError("Nave inexistente: " + letra)
@@ -291,6 +293,8 @@ def ubicar_nave(cubo, flota, nave, punto_desde, punto_hasta):
     Parametros: cubo (list) tablero 3D, flota (dict) flota del jugador, nave (str) letra de la nave,
                 punto_desde (tuple) coordenada inicial, punto_hasta (tuple) coordenada final.
     Retorna: tuple par (cubo, flota) actualizados tras ubicar la nave.
+    Lanza: PuntoInvalidoError, NaveInvalidaError o UbicacionInvalidaError si la
+    ubicacion no es valida.
     """
     n = len(cubo)
     tablero.validar_punto(punto_desde, n)
@@ -301,6 +305,43 @@ def ubicar_nave(cubo, flota, nave, punto_desde, punto_hasta):
     if not puede_ubicar_nave(cubo, nave, puntos, CATALOGO_NAVES):
         raise UbicacionInvalidaError("No se puede ubicar ahi")
     return agregar_nave_a_flota(cubo, flota, nave, puntos)
+
+
+def obtener_extremos_posibles(letra, desde, catalogo):
+    """
+    Objetivo: dar los extremos finales posibles de una nave que empieza en un punto.
+    Parametros: letra (str) tipo de nave, desde (tuple) punto inicial (z, x, y),
+    catalogo (dict) definicion de naves.
+    Retorna: list de puntos finales candidatos (pueden quedar fuera del cubo).
+    """
+    if letra == LETRA_ESTACION:
+        salto = LADO_ESTACION - 1
+        return [(desde[0] + salto, desde[1] + salto, desde[2] + salto)]
+    extremos = []
+    for eje in EJES:
+        hasta = list(desde)
+        hasta[eje] = desde[eje] + catalogo[letra]["celdas"] - 1
+        extremos.append(tuple(hasta))
+    return extremos
+
+
+def hay_posicion_valida(cubo, letra, catalogo):
+    """
+    Objetivo: verificar si queda al menos una posicion del cubo donde ubicar una nave.
+    Parametros: cubo (list) tablero 3D, letra (str) tipo de nave, catalogo (dict).
+    Retorna: bool True si la nave todavia se puede ubicar.
+    """
+    n = len(cubo)
+    for z in range(1, n + 1):
+        for x in range(1, n + 1):
+            for y in range(1, n + 1):
+                desde = (z, x, y)
+                for hasta in obtener_extremos_posibles(letra, desde, catalogo):
+                    if tablero.es_punto_valido(hasta, n):
+                        puntos = calcular_puntos_nave(letra, desde, hasta, catalogo)
+                        if puede_ubicar_nave(cubo, letra, puntos, catalogo):
+                            return True
+    return False
 
 
 def generar_puntos_al_azar(letra, n, catalogo):
@@ -364,6 +405,7 @@ def ubicacion_automatica(cubo, catalogo, semilla):
     Parametros: cubo (list) tablero 3D vacio, catalogo (dict) configuracion de flota,
                 semilla (int o None) semilla para el generador aleatorio.
     Retorna: dict flota completa ubicada en el cubo.
+    Lanza: UbicacionAutomaticaError si no se logra ubicar la flota.
     """
     random.seed(semilla)
     flota = crear_flota()
@@ -445,8 +487,9 @@ def obtener_estado_nave(nave):
     """
     if nave["hundida"]:
         return ESTADO_HUNDIDA
-    if any(cantidad > 0 for cantidad in nave["impactos"].values()):
-        return ESTADO_AVERIADA
+    for cantidad in nave["impactos"].values():
+        if cantidad > 0:
+            return ESTADO_AVERIADA
     return ESTADO_SANA
 
 
@@ -489,7 +532,12 @@ def elegir_celda_para_revelar(flota_jugador, cubo_jugador):
                 candidatos.append(punto)
     if len(candidatos) == 0:
         return None
-    return random.choice(candidatos)# ---------------------------------------------------------------------------
+    return candidatos[random.randint(0, len(candidatos) - 1)]
+
+
+# ---------------------------------------------------------------------------
+# Guardado y reposicion de la flota
+# ---------------------------------------------------------------------------
 
 def guardar_datos_flota(flota_jugador):
     """
@@ -532,11 +580,12 @@ def reponer_flota(datos_flota):
                 if isinstance(clave, str):
                     partes = [int(val.strip()) for val in clave.split(",")]
                     impactos[tuple(partes)] = cantidad
-                elif isinstance(clave, (tuple, list)):
+                elif isinstance(clave, tuple) or isinstance(clave, list):
                     impactos[tuple(clave)] = cantidad
         elif isinstance(impactos_guardados, list):
             for item in impactos_guardados:
-                if isinstance(item, (list, tuple)) and len(item) == 2 and isinstance(item[1], int):
+                es_par = isinstance(item, list) or isinstance(item, tuple)
+                if es_par and len(item) == 2 and isinstance(item[1], int):
                     impactos[tuple(item[0])] = item[1]
                 else:
                     impactos[tuple(item)] = 1
@@ -545,7 +594,7 @@ def reponer_flota(datos_flota):
             "tipo": tipo,
             "puntos": puntos,
             "impactos": impactos,
-            "hundida": bool(datos_nave.get("hundida", False)),
+            "hundida": False,
         }
         nave_repuesta["hundida"] = calcular_hundida(nave_repuesta)
         flota_repuesta[id_nave] = nave_repuesta
@@ -555,7 +604,8 @@ def reponer_flota(datos_flota):
 def reponer_flota_en_cubo(cubo, flota_jugador):
     """
     Objetivo: escribir en el cubo las naves de la flota repuesta con sus estados
-    correspondientes (oculta, impacto o hundida).
+    correspondientes (oculta, impacto o hundida). Las celdas ya detectadas se
+    conservan.
     Parametros: cubo (3D), flota_jugador.
     Retorna: cubo actualizado.
     """
@@ -567,7 +617,7 @@ def reponer_flota_en_cubo(cubo, flota_jugador):
                 tablero.escribir_celda(cubo, punto, tablero.HUNDIDO)
             elif cant_impactos >= requeridos:
                 tablero.escribir_celda(cubo, punto, tablero.IMPACTO)
-            else:
+            elif tablero.leer_celda(cubo, punto) != tablero.DETECTADO:
                 tablero.escribir_celda(cubo, punto, tablero.NAVE_OCULTA)
     return cubo
 
@@ -587,10 +637,3 @@ def validar_datos_flota(datos_flota, catalogo=CATALOGO_NAVES):
         if "puntos" not in nave or len(nave["puntos"]) != catalogo[nave["tipo"]]["celdas"]:
             raise UbicacionInvalidaError(f"Cantidad de puntos invalida para nave {id_nave}")
     return True
-
-
-# Alias descriptivos para compatibilidad con distintos modulos del equipo
-serializar_flota = guardar_datos_flota
-deserializar_flota = reponer_flota
-obtener_datos_flota = guardar_datos_flota
-restaurar_flota = reponer_flota

@@ -7,6 +7,7 @@ MILISEGUNDOS_POR_SEGUNDO = 1000
 
 
 class EjeInvalidoError(tablero.ErrorCubo):
+    """Se lanza cuando el eje de un plano no es z, x ni y."""
     pass
 
 
@@ -67,6 +68,7 @@ def _buscar_capa_recursiva(cubo, z, encontrados, metricas):
     Objetivo: revisar la capa z con ciclos y despues repetir lo mismo con la capa z + 1.
     El caso base es pasarse de la ultima capa.
     Parametros: cubo, z (capa a revisar), encontrados y metricas (se van completando).
+    Retorna: None.
     """
     if z > len(cubo):
         return
@@ -98,6 +100,11 @@ DIRECCIONES_DE_NAVE = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
 
 
 def _recta_de_celdas(inicio, direccion, largo):
+    """
+    Objetivo: generar las celdas de una recta desde un punto.
+    Parametros: inicio (tuple) punto inicial, direccion (tuple) avance por eje, largo (int).
+    Retorna: list de puntos (pueden quedar fuera del cubo).
+    """
     celdas = []
     for i in range(largo):
         celdas.append((inicio[0] + i * direccion[0], inicio[1] + i * direccion[1], inicio[2] + i * direccion[2]))
@@ -105,6 +112,11 @@ def _recta_de_celdas(inicio, direccion, largo):
 
 
 def _recta_es_posible(cubo, recta):
+    """
+    Objetivo: verificar si una nave todavia podria ocupar una recta.
+    Parametros: cubo (list) tablero 3D, recta (list) de puntos.
+    Retorna: True si la recta entra en el cubo y no tiene agua marcada ni hundido.
+    """
     for punto in recta:
         if not tablero.es_punto_valido(punto, len(cubo)):
             return False
@@ -137,14 +149,29 @@ def mapa_probabilidad(cubo, largos):
 
 
 def _celda_plano_z(valor, a, b):
+    """
+    Objetivo: armar un punto del plano con z fijo.
+    Parametros: valor de z, a (x), b (y).
+    Retorna: tuple punto (z, x, y).
+    """
     return (valor, a, b)
 
 
 def _celda_plano_x(valor, a, b):
+    """
+    Objetivo: armar un punto del plano con x fijo.
+    Parametros: valor de x, a (z), b (y).
+    Retorna: tuple punto (z, x, y).
+    """
     return (a, valor, b)
 
 
 def _celda_plano_y(valor, a, b):
+    """
+    Objetivo: armar un punto del plano con y fijo.
+    Parametros: valor de y, a (z), b (x).
+    Retorna: tuple punto (z, x, y).
+    """
     return (a, b, valor)
 
 

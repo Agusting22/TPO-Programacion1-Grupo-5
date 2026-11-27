@@ -2,10 +2,28 @@ import json
 import os
 import time
 
+import armamento
 import flota
+import tablero
 
 DIRECTORIO_PARTIDAS = "partidas"
+DIRECTORIO_EXPORTACIONES = "exportaciones"
 ARCHIVO_RANKING = "ranking.json"
+ESTADOS_CELDA = (
+    tablero.AGUA_SIN_EXPLORAR, tablero.NAVE_OCULTA, tablero.AGUA_MARCADA,
+    tablero.IMPACTO, tablero.HUNDIDO, tablero.DETECTADO,
+)
+CONTADORES_ESTADISTICAS = ("disparos", "aciertos", "fallos", "naves_hundidas")
+
+
+class DatosInvalidosError(tablero.ErrorCubo):
+    """Se lanza cuando los datos de una partida guardada estan mal formados."""
+    pass
+
+
+class RankingInvalidoError(tablero.ErrorCubo):
+    """Se lanza cuando el archivo de ranking existe pero esta danado."""
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -13,16 +31,31 @@ ARCHIVO_RANKING = "ranking.json"
 # ---------------------------------------------------------------------------
 
 def crear_historial():
+    """
+    Objetivo: iniciar el historial de una partida.
+    Parametros: ninguno.
+    Retorna: lista vacia.
+    """
     return []
 
 
 def registrar_evento(historial, jugador, detalle):
+    """
+    Objetivo: agregar un evento numerado al historial.
+    Parametros: historial (list), jugador (str), detalle (dict) de la jugada.
+    Retorna: historial actualizado.
+    """
     evento = {"numero": len(historial) + 1, "jugador": jugador, "detalle": detalle}
     historial.append(evento)
     return historial
 
 
 def obtener_eventos(historial):
+    """
+    Objetivo: consultar los eventos sin modificar el historial.
+    Parametros: historial (list).
+    Retorna: copia de la lista de eventos.
+    """
     return historial.copy()
 
 
@@ -44,6 +77,11 @@ def crear_estadisticas(jugadores):
 
 
 def registrar_disparo(estadisticas, jugador, impacto):
+    """
+    Objetivo: sumar un disparo y su acierto o fallo.
+    Parametros: estadisticas (dict), jugador (str), impacto (bool).
+    Retorna: estadisticas actualizadas.
+    """
     estadisticas[jugador]["disparos"] = estadisticas[jugador]["disparos"] + 1
     if impacto:
         estadisticas[jugador]["aciertos"] = estadisticas[jugador]["aciertos"] + 1
@@ -53,6 +91,11 @@ def registrar_disparo(estadisticas, jugador, impacto):
 
 
 def registrar_nave_hundida(estadisticas, jugador):
+    """
+    Objetivo: sumar una nave hundida a un jugador.
+    Parametros: estadisticas (dict), jugador (str).
+    Retorna: estadisticas actualizadas.
+    """
     estadisticas[jugador]["naves_hundidas"] = estadisticas[jugador]["naves_hundidas"] + 1
     return estadisticas
 
@@ -147,6 +190,85 @@ def _deserializar_flota_jugador(datos_flota):
     return flota.reponer_flota(datos_flota)
 
 
+# ---------------------------------------------------------------------------
+# Validacion de los datos leidos de archivos
+# ---------------------------------------------------------------------------
+
+def _exigir(condicion, mensaje):
+    """
+    Objetivo: cortar la carga de una partida si no se cumple una condicion.
+    Parametros: condicion (bool), mensaje (str) descripcion del problema.
+    Retorna: None.
+    Lanza: DatosInvalidosError si la condicion es falsa.
+    """
+    if not condicion:
+        raise DatosInvalidosError(mensaje)
+
+
+def _validar_cubo(cubo, n):
+    """
+    Objetivo: verificar que un cubo guardado sea de n x n x n con estados conocidos.
+    Parametros: cubo (dato leido), n (int) tamano esperado.
+    Retorna: None.
+    Lanza: DatosInvalidosError si el cubo esta mal formado.
+    """
+    _exigir(isinstance(cubo, list) and len(cubo) == n, "Cubo incompleto")
+    for capa in cubo:
+        _exigir(isinstance(capa, list) and len(capa) == n, "Capa incompleta")
+        for fila in capa:
+            _exigir(isinstance(fila, list) and len(fila) == n, "Fila incompleta")
+            for celda in fila:
+                _exigir(celda in ESTADOS_CELDA, "Estado de celda invalido")
+
+
+def _validar_datos_jugador(datos, nombre, n):
+    """
+    Objetivo: verificar cubo, flota, municion y estadisticas guardadas de un jugador.
+    Parametros: datos (dict) leido de JSON, nombre (str) del jugador, n (int).
+    Retorna: None.
+    Lanza: ErrorCubo, KeyError o TypeError si los datos estan mal formados.
+    """
+    _validar_cubo(datos["cubos"][nombre], n)
+    flota.validar_datos_flota(datos["flotas"][nombre])
+    _exigir(len(datos["flotas"][nombre]) > 0, "Flota vacia")
+    for letra in armamento.CATALOGO_ARMAS:
+        cantidad = datos["municiones"][nombre][letra]
+        ilimitada = armamento.CATALOGO_ARMAS[letra]["municion_inicial"] is None
+        _exigir(isinstance(cantidad, int) or (ilimitada and cantidad is None), "Municion invalida")
+    for contador in CONTADORES_ESTADISTICAS:
+        valor = datos["estadisticas"][nombre][contador]
+        _exigir(isinstance(valor, int), "Estadisticas invalidas")
+
+
+def _validar_datos_partida(datos):
+    """
+    Objetivo: verificar la estructura de una partida guardada antes de reconstruirla.
+    Parametros: datos (dato leido de JSON).
+    Retorna: None.
+    Lanza: ErrorCubo, KeyError o TypeError si los datos estan mal formados.
+    """
+    _exigir(isinstance(datos, dict), "El archivo no contiene una partida")
+    n = datos["n"]
+    _exigir(isinstance(n, int) and n > 0, "Tamano de cubo invalido")
+    jugadores = [datos["jugador_1"], datos["jugador_2"]]
+    for nombre in jugadores:
+        _exigir(isinstance(nombre, str), "Nombre de jugador invalido")
+        _validar_datos_jugador(datos, nombre, n)
+    _exigir(jugadores[0] != jugadores[1], "Jugadores repetidos")
+    _exigir(datos["turno_actual"] in jugadores, "Turno invalido")
+    _exigir(datos["ganador"] is None or datos["ganador"] in jugadores, "Ganador invalido")
+    dificultad = datos.get("dificultad")
+    _exigir(dificultad is None or isinstance(dificultad, str), "Dificultad invalida")
+    dificultades = datos.get("dificultades")
+    if dificultades is not None:
+        _exigir(isinstance(dificultades, dict), "Dificultades invalidas")
+        for valor in dificultades.values():
+            _exigir(isinstance(valor, str), "Dificultades invalidas")
+    _exigir(isinstance(datos["historial"], list), "Historial invalido")
+    for evento in datos["historial"]:
+        _exigir(isinstance(evento["detalle"], dict), "Historial invalido")
+
+
 def serializar_estado(estado):
     """
     Objetivo: convertir el estado completo de una partida a un dict JSON-serializable.
@@ -192,7 +314,9 @@ def deserializar_estado(datos):
     Objetivo: reconstruir el estado de partida desde un dict leido de JSON.
     Parametros: datos (dict).
     Retorna: estado de partida listo para usar.
+    Lanza: ErrorCubo, KeyError, TypeError o ValueError si los datos estan mal formados.
     """
+    _validar_datos_partida(datos)
     estado = {}
     estado["n"] = datos["n"]
     estado["jugador_1"] = datos["jugador_1"]
@@ -215,6 +339,9 @@ def deserializar_estado(datos):
     # Reparar estados del cubo segun la flota restaurada
     for nombre in estado["flotas"]:
         flota.reponer_flota_en_cubo(estado["cubos"][nombre], estado["flotas"][nombre])
+        for nave in estado["flotas"][nombre].values():
+            for cantidad in nave["impactos"].values():
+                _exigir(isinstance(cantidad, int), "Impactos invalidos")
     # Municiones
     estado["municiones"] = datos["municiones"]
     # Estadisticas
@@ -236,6 +363,11 @@ def deserializar_estado(datos):
 # ---------------------------------------------------------------------------
 
 def _ruta_partida(nombre):
+    """
+    Objetivo: armar la ruta relativa del archivo de una partida.
+    Parametros: nombre (str sin extension).
+    Retorna: str ruta del archivo.
+    """
     return os.path.join(DIRECTORIO_PARTIDAS, nombre + ".json")
 
 
@@ -258,7 +390,8 @@ def cargar_partida(nombre):
     Objetivo: cargar el estado de una partida guardada desde JSON.
     Parametros: nombre (str sin extension).
     Retorna: estado reconstruido (dict).
-    Lanza: FileNotFoundError si el archivo no existe, ValueError si el JSON es invalido.
+    Lanza: FileNotFoundError si el archivo no existe, ValueError si el JSON es invalido,
+    ErrorCubo, KeyError o TypeError si la estructura es incorrecta.
     """
     ruta = _ruta_partida(nombre)
     with open(ruta, "r", encoding="utf-8") as archivo:
@@ -281,19 +414,6 @@ def listar_partidas():
     return sorted(nombres)
 
 
-def eliminar_partida(nombre):
-    """
-    Objetivo: eliminar una partida guardada.
-    Parametros: nombre (str sin extension).
-    Retorna: True si se elimino, False si no existia.
-    """
-    ruta = _ruta_partida(nombre)
-    if os.path.exists(ruta):
-        os.remove(ruta)
-        return True
-    return False
-
-
 # ---------------------------------------------------------------------------
 # Ranking (Entrega 3)
 # ---------------------------------------------------------------------------
@@ -304,6 +424,8 @@ def guardar_ranking(ganador, nombre_partida, turnos, es_vs_maquina):
     Parametros: ganador (str), nombre_partida (str), turnos (int),
     es_vs_maquina (bool).
     Retorna: None.
+    Lanza: RankingInvalidoError si el archivo existente esta danado (no se modifica),
+    OSError si no se puede escribir.
     """
     ranking = listar_ranking()
     entrada = {
@@ -318,19 +440,41 @@ def guardar_ranking(ganador, nombre_partida, turnos, es_vs_maquina):
         json.dump(ranking, archivo, ensure_ascii=False, indent=2)
 
 
+def _es_entrada_valida(entrada):
+    """
+    Objetivo: verificar que una entrada del ranking tenga los datos necesarios.
+    Parametros: entrada (dato leido de JSON).
+    Retorna: True si la entrada es valida.
+    """
+    if not isinstance(entrada, dict):
+        return False
+    return (
+        isinstance(entrada.get("ganador"), str)
+        and isinstance(entrada.get("turnos"), int)
+        and isinstance(entrada.get("timestamp", ""), str)
+    )
+
+
 def listar_ranking():
     """
     Objetivo: leer el archivo de ranking y devolver la lista de entradas.
     Parametros: ninguno.
     Retorna: lista de dicts con ganador, partida, turnos, timestamp.
+    Lanza: RankingInvalidoError si el archivo existe pero esta danado.
     """
     if not os.path.exists(ARCHIVO_RANKING):
         return []
     try:
         with open(ARCHIVO_RANKING, "r", encoding="utf-8") as archivo:
-            return json.load(archivo)
-    except (json.JSONDecodeError, OSError):
-        return []
+            ranking = json.load(archivo)
+    except (ValueError, OSError) as error:
+        raise RankingInvalidoError("No se pudo leer el ranking: " + str(error))
+    if not isinstance(ranking, list):
+        raise RankingInvalidoError("El ranking no es una lista")
+    for entrada in ranking:
+        if not _es_entrada_valida(entrada):
+            raise RankingInvalidoError("El ranking tiene entradas invalidas")
+    return ranking
 
 
 def formatear_ranking(entradas):
@@ -342,12 +486,116 @@ def formatear_ranking(entradas):
     if not entradas:
         return "No hay partidas registradas en el ranking."
     lineas = ["=== Ranking de partidas ==="]
-    for i, entrada in enumerate(entradas, 1):
+    for i in range(len(entradas)):
+        entrada = entradas[i]
         modo = "vs maquina" if entrada.get("es_vs_maquina") else "1v1"
         lineas.append(
-            str(i) + ". " + entrada["ganador"]
+            str(i + 1) + ". " + entrada["ganador"]
+            + " | " + str(entrada.get("partida", ""))
             + " | " + str(entrada["turnos"]) + " turnos"
             + " | " + modo
             + " | " + entrada.get("timestamp", "")
         )
     return "\n".join(lineas)
+
+
+# ---------------------------------------------------------------------------
+# Exportacion de reportes (Entrega 3)
+# ---------------------------------------------------------------------------
+
+def _formatear_celda(punto):
+    """
+    Objetivo: representar un punto del cubo como texto.
+    Parametros: punto (tuple) coordenada (z, x, y).
+    Retorna: str con el formato "z,x,y".
+    """
+    return ",".join([str(valor) for valor in punto])
+
+
+def _describir_jugada(jugada):
+    """
+    Objetivo: describir en una linea una jugada del historial.
+    Parametros: jugada (dict con claves arma, punto, eje, valor, resultado).
+    Retorna: str con el arma, el objetivo y el resultado.
+    """
+    letra = str(jugada.get("arma"))
+    texto = armamento.CATALOGO_ARMAS.get(letra, {}).get("nombre", letra)
+    if jugada.get("punto") is not None:
+        texto = texto + " apuntado a " + _formatear_celda(jugada["punto"])
+    if jugada.get("eje") is not None:
+        texto = texto + " (eje " + str(jugada["eje"]) + ")"
+    if jugada.get("valor") is not None:
+        texto = texto + " valor " + str(jugada["valor"])
+    resultado = jugada.get("resultado")
+    if resultado is None:
+        return texto + "."
+    if resultado.get("tipo") == "sonar":
+        return texto + ". Celdas reveladas: " + str(len(resultado.get("reveladas", []))) + "."
+    impactos = [
+        id_nave + " en " + _formatear_celda(celda)
+        for celda, id_nave, tipo in resultado.get("celdas_impactadas", [])
+    ]
+    if impactos:
+        texto = texto + ". Impactos: " + "; ".join(impactos)
+    else:
+        texto = texto + ". Sin impactos"
+    if resultado.get("naves_hundidas"):
+        texto = texto + ". Hundidas: " + ", ".join(resultado["naves_hundidas"])
+    return texto + "."
+
+
+def _obtener_modo(estado):
+    """
+    Objetivo: obtener el nombre del formato de una partida.
+    Parametros: estado (dict).
+    Retorna: str con el formato.
+    """
+    if estado.get("es_maquina_vs_maquina", False):
+        return "maquina contra maquina"
+    if estado.get("es_vs_maquina", False):
+        return "uno contra la maquina"
+    return "uno contra uno"
+
+
+def formatear_reporte(estado, nombre):
+    """
+    Objetivo: armar el texto del reporte de una partida (resumen e historial).
+    Parametros: estado (dict), nombre (str) de la partida.
+    Retorna: str con el reporte completo.
+    """
+    ganador = estado["ganador"]
+    if ganador is None:
+        ganador = "sin ganador"
+    lineas = [
+        "===== Reporte de partida: " + nombre + " =====",
+        "Fecha: " + time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "Modo: " + _obtener_modo(estado),
+        "Jugadores: " + estado["jugador_1"] + " y " + estado["jugador_2"],
+        "Ganador: " + ganador,
+        "Turnos jugados: " + str(len(estado["historial"])),
+        "",
+        formatear_resumen(estado["estadisticas"]),
+        "",
+        "--- Historial ---",
+    ]
+    for evento in estado["historial"]:
+        lineas.append(
+            str(evento["numero"]) + ". " + evento["jugador"] + ": "
+            + _describir_jugada(evento["detalle"])
+        )
+    return "\n".join(lineas) + "\n"
+
+
+def exportar_reporte(estado, nombre):
+    """
+    Objetivo: escribir el reporte de una partida en un archivo de texto.
+    Parametros: estado (dict), nombre (str sin extension).
+    Retorna: str ruta relativa del archivo escrito.
+    Lanza: OSError si no se puede escribir el archivo.
+    """
+    os.makedirs(DIRECTORIO_EXPORTACIONES, exist_ok=True)
+    ruta = os.path.join(DIRECTORIO_EXPORTACIONES, nombre + ".txt")
+    texto = formatear_reporte(estado, nombre)
+    with open(ruta, "w", encoding="utf-8") as archivo:
+        archivo.write(texto)
+    return ruta

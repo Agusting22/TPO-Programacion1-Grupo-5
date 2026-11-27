@@ -92,6 +92,7 @@ def validar_punto(punto, n):
     Objetivo: validar un punto del cubo y lanzar una excepcion si es invalido.
     Parametros: punto (tuple) coordenadas (z, x, y), n (int) tamano del cubo.
     Retorna: tuple el mismo punto si es valido.
+    Lanza: PuntoInvalidoError si el punto esta fuera del cubo o mal formado.
     """
     if not es_punto_valido(punto, n):
         raise PuntoInvalidoError("Punto invalido: " + str(punto))
@@ -262,6 +263,7 @@ def validar_matriz(matriz):
     Objetivo: verificar que una lista de listas sea una matriz rectangular no vacia.
     Parametros: matriz (list) lista bidimensional a validar.
     Retorna: tuple (cantidad_filas, cantidad_columnas) de la matriz.
+    Lanza: MatrizInvalidaError si la matriz es vacia o irregular.
     """
     if len(matriz) == 0:
         raise MatrizInvalidaError("Matriz vacia o invalida")
@@ -279,6 +281,7 @@ def sumar_matrices(a, b):
     Objetivo: sumar elemento a elemento dos matrices de iguales dimensiones.
     Parametros: a (list) primera matriz, b (list) segunda matriz.
     Retorna: list nueva matriz resultante de la suma a + b.
+    Lanza: MatrizInvalidaError si las matrices son invalidas o de distinto tamano.
     """
     if validar_matriz(a) != validar_matriz(b):
         raise MatrizInvalidaError("Las matrices deben tener el mismo tamano")
@@ -296,6 +299,7 @@ def restar_matrices(a, b):
     Objetivo: restar elemento a elemento dos matrices de iguales dimensiones.
     Parametros: a (list) primera matriz, b (list) segunda matriz.
     Retorna: list nueva matriz resultante de la resta a - b.
+    Lanza: MatrizInvalidaError si las matrices son invalidas o de distinto tamano.
     """
     if validar_matriz(a) != validar_matriz(b):
         raise MatrizInvalidaError("Las matrices deben tener el mismo tamano")
@@ -313,6 +317,7 @@ def multiplicar_matrices(a, b):
     Objetivo: calcular el producto matricial entre a y b.
     Parametros: a (list) matriz de m x k, b (list) matriz de k x n.
     Retorna: list nueva matriz resultante de m x n.
+    Lanza: MatrizInvalidaError si las matrices son invalidas o incompatibles.
     """
     filas_a, columnas_a = validar_matriz(a)
     filas_b, columnas_b = validar_matriz(b)
@@ -357,7 +362,7 @@ def obtener_tamano(cubo_o_n):
     Retorna: int dimension n del cubo.
     Lanza: ErrorCubo si la dimension no es valida (menor a 1).
     """
-    if type(cubo_o_n) is list:
+    if isinstance(cubo_o_n, list):
         n = len(cubo_o_n)
     else:
         n = cubo_o_n
@@ -455,10 +460,10 @@ def _recorrer_capa_espiral(z, x1, x2, y1, y2):
         anillo.append((z, x1, y))
     for x in range(x1 + 1, x2 + 1):
         anillo.append((z, x, y2))
-    for y in range(y2 - 1, y1 - 1, -1):
-        anillo.append((z, x2, y))
-    for x in range(x2 - 1, x1, -1):
-        anillo.append((z, x, y1))
+    for paso in range(y1, y2):
+        anillo.append((z, x2, y1 + y2 - 1 - paso))
+    for paso in range(x1 + 1, x2):
+        anillo.append((z, x1 + x2 - paso, y1))
 
     sub_espiral = _recorrer_capa_espiral(z, x1 + 1, x2 - 1, y1 + 1, y2 - 1)
     for punto in sub_espiral:
