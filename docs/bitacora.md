@@ -34,7 +34,7 @@ Integrador de esta entrega: Agustin Gonzalez
 
 | Modulo | Alcance de la Entrega 3 | Responsable |
 |--------|--------------------------|-------------|
-| tablero.py (Recorridos del cubo) | Recorridos alternativos del cubo (capas Z, octantes recursivo, espiral recursivo, propagacion recursiva), despacho por diccionario y excepcion RecorridoInvalidoError | Agustin Cangiani |
+| tablero.py / radar.py (Recorridos del cubo) | Recorridos alternativos del cubo: capas Z en tablero.py; octantes recursivo, espiral recursivo, propagacion recursiva, despacho por diccionario y excepcion RecorridoInvalidoError en radar.py | Agustin Cangiani |
 | flota.py (Persistencia) | Datos de la flota para guardar y reponer la partida (guardar_datos_flota, reponer_flota, reponer_flota_en_cubo, validar_datos_flota) | Francisco Pavlicich |
 | armamento.py (Armas avanzadas) | Onda expansiva (propagacion recursiva) y Torpedo guiado (busqueda contigua recursiva) | Kevin Palma |
 | radar.py (Busquedas recursivas) | Busqueda recursiva (capa por capa) | Agustin Gonzalez |
@@ -54,13 +54,18 @@ Responsable: Kevin Maximiliano Palma Romero
 
 | Modulo | Correcciones |
 |--------|--------------|
-| partida.py | La opcion Guardar y salir cierra la partida solo si se pudo guardar. Menu de pausa en maquina vs maquina (cada 50 turnos, avance de a un turno, guardar o salir), confirmacion antes de iniciar y limite de 1100 turnos con estadisticas |
+| partida.py | La opcion Guardar y salir cierra la partida solo si se pudo guardar. Menu de pausa en maquina vs maquina (cada 50 turnos, avance de a un turno, guardar o salir), confirmacion antes de iniciar y limite de turnos segun el tamano del cubo (1100 con N = 8) con estadisticas |
 | partida.py | Manejo de partidas guardadas danadas al cargarlas, salida con mensaje ante Ctrl+C o fin de la entrada y captura de errores del juego en el menu principal |
 | partida.py | Reinicio de la ubicacion manual cuando una nave queda sin lugar, informe de la celda alcanzada por el torpedo guiado y revision de las vistas del cubo (despacho por diccionario y propagacion desde el centro o un origen elegido) |
 | partida.py | Al terminar una partida se muestra el ranking, se avisa si esta danado y se ofrece exportar el reporte |
 | registro.py | Validacion de los datos de las partidas guardadas, proteccion del archivo de ranking danado, exportacion de reportes y eliminacion de una funcion sin uso |
 | flota.py | La carga conserva las celdas detectadas y recalcula las naves hundidas segun sus impactos. Verificacion de posiciones disponibles, eliminacion de alias sin uso y docstrings |
-| tablero.py | Ajuste del recorrido en espiral y de la validacion de tipos, y docstrings |
+| tablero.py | Ajuste del recorrido en espiral (ubicado en radar.py) y de la validacion de tipos, y docstrings |
 | radar.py / armamento.py | Docstrings faltantes |
+| tablero.py / radar.py | Recorridos recursivos y su despacho ubicados en radar.py; tamano del cubo configurable en un unico lugar, con validacion de 7 a 15 |
+| partida.py | Menu de turno en el orden de la consigna (3 - Guardar y salir), mensajes de impacto, sonar y turno de la maquina segun las muestras, validacion del arma, descuento de municion solo si la jugada se aplica, entrada no decodificable y nombres reservados de Windows |
+| registro.py | El guardado devuelve la ruta escrita y no dana archivos existentes ante textos que no se pueden codificar; carga de flotas vacias y del historial identico al guardado |
+| partida.py / registro.py / flota.py / armamento.py / radar.py / tablero.py | Declaracion de excepciones en los docstrings |
+| tablero.py / radar.py / partida.py | Recorridos por capas de x y de y en tablero.py, registrados en el despacho de radar.py y disponibles como vistas 7 y 8 del cubo |
 | tests | Actualizacion de pruebas y nuevas pruebas de regresion |
 | .gitignore | Exclusion de ranking.json y exportaciones/ |

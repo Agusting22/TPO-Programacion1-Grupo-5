@@ -2,12 +2,12 @@
 
 TPO de Programacion I (UADE). **Entrega final.**
 
-Batalla naval por consola dentro de un cubo de 8 x 8 x 8. Incluye:
+Batalla naval por consola dentro de un cubo de N x N x N celdas (8 x 8 x 8 por defecto). Incluye:
 
 - Tres modos: uno contra uno, uno contra la maquina y maquina contra maquina.
 - Dos niveles para la maquina: Facil y Dificil.
 - Siete armas, entre ellas dos con algoritmos recursivos.
-- Tres busquedas de radar con metricas y seis vistas del cubo.
+- Tres busquedas de radar con metricas y ocho vistas del cubo.
 - Guardado y carga de partidas en JSON, ranking de partidas terminadas y exportacion de reportes.
 
 ---
@@ -34,9 +34,13 @@ python main.py
 
 Las rutas de `partidas/`, `exportaciones/` y `ranking.json` son relativas a la carpeta desde la que se ejecuta el programa. Si se ejecuta desde otra carpeta, no se van a encontrar las partidas guardadas.
 
+## Tamano del cubo
+
+El tamano N se configura en un unico lugar: la constante `TAMANO_CUBO` de `tablero.py` (por defecto 8). Admite valores de 7 a 15: con menos de 7 la flota completa no siempre se puede ubicar y con mas de 15 los turnos de la maquina dificil se vuelven lentos. Con un valor fuera de ese rango, al elegir un modo de juego se avisa `Tamano de cubo invalido` y se vuelve al menu. Las partidas guardadas conservan el tamano con el que se crearon.
+
 ## Pruebas
 
-Tambien desde la raiz del repositorio (154 pruebas):
+Tambien desde la raiz del repositorio (196 pruebas):
 
 ```bash
 python -m pytest -v
@@ -85,16 +89,28 @@ Dificultad de la maquina:
 --- Turno de Jugador 1 ---
 1 - Disparar
 2 - Ver el cubo
-3 - Reporte de radar (metricas)
-4 - Guardar y salir
+3 - Guardar y salir
+4 - Reporte de radar (metricas)
 5 - Salir de la partida
 ```
 
 - **1 - Disparar**: pide el arma (`Arma (T/R/C/S/L/O/G):`) y el objetivo. Si la jugada es valida, el turno pasa al rival. Si no (sin municion, celda ya disparada o dato invalido), el turno no cambia.
 - **2 - Ver el cubo**: abre el submenu de vistas. No consume el turno.
-- **3 - Reporte de radar (metricas)**: compara las tres busquedas sobre la flota propia. No consume el turno.
-- **4 - Guardar y salir**: guarda la partida y vuelve al menu principal.
+- **3 - Guardar y salir**: guarda la partida y vuelve al menu principal.
+- **4 - Reporte de radar (metricas)**: compara las tres busquedas sobre la flota propia. No consume el turno.
 - **5 - Salir de la partida**: vuelve al menu principal **sin guardar**.
+
+Mensajes de resultado, como se ven en pantalla:
+
+```
+Impacto. Destructor averiado (1 de 3).
+Sonar sobre el plano z = 3. 2 contactos detectados.
+
+--- Turno de la maquina ---
+Dispara a 6,3,1. Agua.
+```
+
+En maquina contra maquina el encabezado indica cual juega (`--- Turno de Maquina 2 ---`).
 
 ### Ver el cubo
 
@@ -106,18 +122,22 @@ Dificultad de la maquina:
 4 - Recorrido por octantes
 5 - Recorrido en espiral
 6 - Recorrido por propagacion (desde el centro)
+7 - Recorrido por capas en el eje x
+8 - Recorrido por capas en el eje y
 ```
 
 La vista elegida se muestra para el cubo propio y para el del rival (sin revelar sus naves ocultas).
 
 | Opcion | Que muestra |
 |--------|-------------|
-| 1 | Las 8 capas, con `y` en las filas y `x` en las columnas |
+| 1 | Las N capas (8 por defecto), con `y` en las filas y `x` en las columnas |
 | 2 | El plano de un `x` elegido, con `z` en las filas e `y` en las columnas |
 | 3 | El plano de un `y` elegido, con `z` en las filas y `x` en las columnas |
 | 4 | Lista de celdas en el orden de una subdivision recursiva en octantes |
 | 5 | Lista de celdas capa por capa, en espiral recursiva del borde al centro |
 | 6 | Lista de celdas por distancia ortogonal creciente (recursivo) desde un origen. El programa pide `Origen (z,x,y):`; con Enter usa el centro |
+| 7 | Lista de celdas capa por capa de x (iterativo) |
+| 8 | Lista de celdas capa por capa de y (iterativo) |
 
 Simbolos: `~` sin explorar, `o` agua, `X` impacto, `#` hundido, `?` detectado. En el cubo propio, las celdas de nave sin dano ni deteccion se muestran con la letra de la nave.
 
@@ -125,7 +145,7 @@ Simbolos: `~` sin explorar, `o` agua, `X` impacto, `#` hundido, `?` detectado. E
 
 ## Reglas
 
-Las coordenadas se escriben como `z,x,y`, con valores de 1 a 8. Hay dos jugadores y cada uno realiza una jugada por turno. Gana quien hunde toda la flota rival.
+Las coordenadas se escriben como `z,x,y`, con valores de 1 a N (8 por defecto). Hay dos jugadores y cada uno realiza una jugada por turno. Gana quien hunde toda la flota rival.
 
 ### Flota (10 naves por jugador)
 
@@ -133,9 +153,9 @@ Las coordenadas se escriben como `z,x,y`, con valores de 1 a 8. Hay dos jugadore
 |------|:-----:|:------:|:--------:|-------------|-------------------------|
 | Fragata | F | 2 | 3 | Ninguna | - |
 | Destructor | D | 3 | 2 | Ninguna | Por cada celda suya impactada se marca como detectada una celda oculta de la flota atacante |
-| Submarino | S | 3 | 2 | Solo en la mitad inferior (z de 1 a 4) | Inmune al barrido laser |
-| Crucero | C | 4 | 1 | No ocupa z = 1 ni z = 8 | - |
-| Portaaviones | P | 5 | 1 | Solo en la mitad superior (z de 5 a 8) | Cada celda necesita 2 impactos para quedar danada |
+| Submarino | S | 3 | 2 | Solo en la mitad inferior (z de 1 a 4 con N = 8) | Inmune al barrido laser |
+| Crucero | C | 4 | 1 | No ocupa z = 1 ni z = N | - |
+| Portaaviones | P | 5 | 1 | Solo en la mitad superior (z de 5 a 8 con N = 8) | Cada celda necesita 2 impactos para quedar danada |
 | Estacion orbital | E | 8 (bloque 2x2x2) | 1 | No toca ninguna cara exterior del cubo | Al hundirla, el atacante suma 1 misil de racimo |
 
 Entre dos naves tiene que quedar al menos una celda libre en las 26 direcciones (incluidas las diagonales).
@@ -198,13 +218,13 @@ Las pausas son fijas: cada 50 turnos con la opcion 1. Si se llega al limite de t
 
 ## Busquedas de radar
 
-La opcion 3 del menu de turno ejecuta, una despues de otra, tres busquedas de las celdas propias que tienen nave sin dano (ocultas o detectadas):
+La opcion 4 del menu de turno ejecuta, una despues de otra, tres busquedas de las celdas propias que tienen nave sin dano (ocultas o detectadas):
 
 | Busqueda | Funcion | Como trabaja |
 |----------|---------|--------------|
-| Lineal | `buscar_naves_lineal` | Tres ciclos anidados sobre las 512 celdas |
+| Lineal | `buscar_naves_lineal` | Tres ciclos anidados sobre las N x N x N celdas (512 con N = 8) |
 | Optimizada | `buscar_naves_optimizada` | Consulta solo las celdas registradas en la flota (35 en una flota completa) |
-| Recursiva | `buscar_naves_recursiva` | Revisa una capa z y se llama a si misma con la siguiente (profundidad 8) |
+| Recursiva | `buscar_naves_recursiva` | Revisa una capa z y se llama a si misma con la siguiente (profundidad N) |
 
 De cada una informa celdas encontradas, comparaciones, tiempo en milisegundos y profundidad maxima de recursion. Al final lista las celdas activas.
 
@@ -214,12 +234,12 @@ De cada una informa celdas encontradas, comparaciones, tiempo en milisegundos y 
 
 ### Como guardar
 
-- **Uno contra uno y contra la maquina**: en el menu de turno, opcion `4 - Guardar y salir`.
+- **Uno contra uno y contra la maquina**: en el menu de turno, opcion `3 - Guardar y salir`.
 - **Maquina contra maquina**: en el menu de pausa, opcion `3 - Guardar y salir`.
 
-En ambos casos se pide `Nombre de la partida:`. Si se guarda correctamente, se vuelve al menu principal. Si el archivo no se puede escribir, se informa el error y la partida sigue abierta.
+En ambos casos se pide `Nombre de la partida:`. Si se guarda correctamente, se vuelve al menu principal. Si el archivo no se puede escribir, se informa el error y la partida sigue abierta; un guardado anterior no se modifica si los datos no se pueden codificar.
 
-- **Nombres validos**: de 1 a 30 caracteres entre letras, numeros, guion (`-`) y guion bajo (`_`). Sin espacios ni extension.
+- **Nombres validos**: de 1 a 30 caracteres entre letras, numeros, guion (`-`) y guion bajo (`_`). Sin espacios ni extension. No se aceptan los nombres reservados de Windows (`CON`, `PRN`, `AUX`, `NUL`, `COM1` a `COM9`, `LPT1` a `LPT9`), en mayusculas o minusculas.
 - **Sobrescritura**: guardar con un nombre que ya existe **reemplaza el archivo sin pedir confirmacion**.
 
 ### Como retomar
@@ -282,9 +302,9 @@ Una partida entre maquinas que llega al limite de turnos no entra al ranking, pe
 ```
 main.py       Punto de entrada.
 partida.py    Menus, turnos, entrada y salida por consola y jugadas de la maquina.
-tablero.py    Cubo 3D, coordenadas, dibujo de capas y cortes, recorridos y operaciones de matrices.
+tablero.py    Cubo 3D, coordenadas, tamano, dibujo de capas y cortes, recorridos por capas y matrices.
 flota.py      Catalogo de naves, ubicacion, impactos y datos de la flota para guardar.
-radar.py      Busquedas, sonar y mapa de probabilidad.
+radar.py      Busquedas, sonar, recorridos recursivos y mapa de probabilidad.
 armamento.py  Catalogo de armas, municion y aplicacion de disparos.
 registro.py   Historial, estadisticas, guardado y carga, ranking y exportacion.
 partidas/     Partidas guardadas.
